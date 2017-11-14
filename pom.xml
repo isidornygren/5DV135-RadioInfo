@@ -4,9 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>se.umu.cs._5dv135.RadioInfo</groupId>
+    <groupId>RadioInfo</groupId>
     <artifactId>RadioInfo</artifactId>
     <version>0.1</version>
-
-    
+    <name>RadioInfo</name>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+    </dependencies>
 </project>

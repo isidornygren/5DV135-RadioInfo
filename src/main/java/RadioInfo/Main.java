@@ -1,4 +1,4 @@
-package main.se.umu.cs._5dv135.RadioInfo;
+package main.java.RadioInfo;
 
 public class Main {
 
