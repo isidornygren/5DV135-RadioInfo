@@ -1,4 +1,4 @@
-package main.java.RadioInfo;
+package RadioInfo;
 
 public class Main {
 
