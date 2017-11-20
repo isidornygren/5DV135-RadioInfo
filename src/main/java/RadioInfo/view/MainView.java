@@ -6,13 +6,20 @@ import RadioInfo.ProgramTableModel.ProgramTableModel;
 import RadioInfo.controller.MainController;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainView {
     private final JFrame frame;
@@ -39,9 +46,9 @@ public class MainView {
         EpisodeObjectBuilder episodeBuilder = new EpisodeObjectBuilder();
         try {
             EpisodeObjectBuilder episodeObjectBuilder = new EpisodeObjectBuilder();
-            EpisodeObject tempEpisode = episodeObjectBuilder.setImageUrl(new URL("http://image.flaticon.com/icons/png/128/291/291201.png"))
-                    .setTitle("Episode title").setChannelId(1).setStartTimeUtc(new Date()).setEndTimeUtc(new Date()).setId(1).setImageUrlTemplate(new URL("http://image.flaticon.com/icons/png/128/291/291201.png"))
-                    .setProgramId(1).setSubtitle("Subtitle").setUrl(new URL("http://www.google.com/")).createEpisodeObject();
+            EpisodeObject tempEpisode = episodeObjectBuilder.setImageUrl(new URL("http://static-cdn.sr.se/sida/images/2519/9e5f591c-c3a5-48a6-9458-ade46a3cbf12.jpg"))
+                    .setTitle("Nazistattacken i Kärrtorp").setChannelId(1).setStartTimeUtc(new Date()).setEndTimeUtc(new Date()).setId(1).setImageUrlTemplate(new URL("http://static-cdn.sr.se/sida/images/2519/9e5f591c-c3a5-48a6-9458-ade46a3cbf12.jpg"))
+                    .setProgramId(1).setSubtitle("Plötsligt hörs ett flyglarm. Svartklädda, maskerade män närmar sig. De kastar glasflaskor in mot torget. Snart pratar hela Sverige om nazistattacken i Kärrtorp.").setUrl(new URL("http://www.google.com/")).createEpisodeObject();
             tempEpisode.loadImage();
             setInformation(tempEpisode);
         }catch(Exception e){
@@ -102,10 +109,39 @@ public class MainView {
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
         editorPane.setFocusable(false);
+        editorPane.setPreferredSize(new Dimension(400,150));
+
+        // Make hyperlinks open in the browser
+        editorPane.addHyperlinkListener(new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent event) {
+                if(event.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
+                    if(Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().browse(event.getURL().toURI());
+                        }catch(java.net.URISyntaxException e){
+                            e.printStackTrace(); //TODO change error printout
+                        }catch(java.io.IOException e){
+                            e.printStackTrace(); //TODO change error printout
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add padding to the panel
+        informationPanel.setBorder(new EmptyBorder(10,10,10,10));
 
         // Style the editorPane
         HTMLEditorKit kit = new HTMLEditorKit();
         editorPane.setEditorKit(kit);
+        StyleSheet styleSheet = kit.getStyleSheet();
+        styleSheet.addRule("h1 {font-family: Avenir-Heavy,\"Helvetica Neue\",Helvetica,Arial,Sans-serif;" +
+                "font-size: 20px;margin:0;padding:0;}");
+        styleSheet.addRule("small {font-family: \"Helvetica Neue\",Helvetica,Arial,Sans-serif;" +
+                "font-size: 10px;color:#575757;margin:0;padding:0;}");
+        styleSheet.addRule("p {font-family: \"Helvetica Neue\",Helvetica,Arial,Sans-serif;" +
+                "font-size: 12px;margin:0;padding:0;}");
 
         JPanel informationControls = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton closeButton = new JButton("close");
@@ -131,15 +167,31 @@ public class MainView {
         }else{
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<h1>").append(episode.getTitle()).append("</h1>");
-            stringBuilder.append("<h2>").append(episode.getSubtitle()).append("</h2>");
+            // If the episode is currently playing
+            if(episode.getEndTimeUtc().getTime() > new Date().getTime()){
+                stringBuilder.append("<small>Sänds kl.");
+            }else{
+                stringBuilder.append("<small>Sändes kl.");
+            }
+            stringBuilder.append(new SimpleDateFormat("HH:mm").format(episode.getStartTimeUtc()))
+                    .append("-")
+                    .append(new SimpleDateFormat("HH:mm").format(episode.getEndTimeUtc()))
+                    .append(", ")
+                    .append(new SimpleDateFormat("EEEE", new Locale("sv")).format(episode.getEndTimeUtc()))
+                    .append(" den ")
+                    .append(new SimpleDateFormat("d/M YYYY").format(episode.getEndTimeUtc()))
+                    .append("</small>");
+            stringBuilder.append("<p>").append(episode.getSubtitle()).append("</p>");
+            stringBuilder.append("<a href=\"").append(episode.getUrl().toString()).append("\">Lyssna här</a>");
             editorPane.setText(stringBuilder.toString());
-            ImageIcon icon = new ImageIcon(episode.getImage());
+            ImageIcon icon = new ImageIcon(episode.getImage().getScaledInstance(200,-1,Image.SCALE_SMOOTH));
             iconLabel.setIcon(icon);
 
             if(!informationPanel.isVisible()){
                 informationPanel.setVisible(true);
             }
         }
+        // Updates frame size + more
         frame.pack();
     }
 }
