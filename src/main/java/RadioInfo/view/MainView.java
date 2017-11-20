@@ -7,15 +7,10 @@ import RadioInfo.controller.MainController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
+import javax.swing.event.*;
+import javax.swing.text.html.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.net.URISyntaxException;
+import java.awt.event.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,9 +36,6 @@ public class MainView {
         frame.add(buildTable(), BorderLayout.CENTER);
         frame.add(buildInformation(), BorderLayout.PAGE_END);
 
-        //setInformation("Information about the current program, Testing multiple lines and scaleability\n What happens if this line is even longer? Nobody really knows.");
-        URL imageUrl;
-        EpisodeObjectBuilder episodeBuilder = new EpisodeObjectBuilder();
         try {
             EpisodeObjectBuilder episodeObjectBuilder = new EpisodeObjectBuilder();
             EpisodeObject tempEpisode = episodeObjectBuilder.setImageUrl(new URL("http://static-cdn.sr.se/sida/images/2519/9e5f591c-c3a5-48a6-9458-ade46a3cbf12.jpg"))
@@ -144,7 +136,7 @@ public class MainView {
                 "font-size: 12px;margin:0;padding:0;}");
 
         JPanel informationControls = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton closeButton = new JButton("close");
+        JButton closeButton = new JButton("X");
         closeButton.addActionListener(e -> setInformation(null));
 
         informationControls.add(closeButton);
@@ -153,7 +145,7 @@ public class MainView {
         episodePanel.add(scrollPane, BorderLayout.CENTER);
 
         informationPanel.add(episodePanel, BorderLayout.CENTER);
-        informationPanel.add(informationControls, BorderLayout.PAGE_END);
+        informationPanel.add(informationControls, BorderLayout.PAGE_START);
         informationPanel.setVisible(false);
 
         return informationPanel;
@@ -192,6 +184,6 @@ public class MainView {
             }
         }
         // Updates frame size + more
-        frame.pack();
+        //frame.pack();
     }
 }
