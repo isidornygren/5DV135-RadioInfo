@@ -14,7 +14,7 @@ public class EpisodeObject {
     private Date endTimeUtc;
     private URL url;
     private Integer programId; //TODO Object
-    private Integer channelId; //TODO Object
+    private Integer channelId;
 
     private URL imageUrl;
     private URL imageUrlTemplate;
@@ -43,6 +43,54 @@ public class EpisodeObject {
 
     public void loadImageTemplate() throws IOException {
         imageTemplate = ImageIO.read(imageUrlTemplate);
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public void setStartTimeUtc(Date startTimeUtc) {
+        this.startTimeUtc = startTimeUtc;
+    }
+
+    public void setEndTimeUtc(Date endTimeUtc) {
+        this.endTimeUtc = endTimeUtc;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    public void setProgramId(Integer programId) {
+        this.programId = programId;
+    }
+
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
+    }
+
+    public void setImageUrl(URL imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setImageUrlTemplate(URL imageUrlTemplate) {
+        this.imageUrlTemplate = imageUrlTemplate;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public void setImageTemplate(Image imageTemplate) {
+        this.imageTemplate = imageTemplate;
     }
 
     public Integer getId() {

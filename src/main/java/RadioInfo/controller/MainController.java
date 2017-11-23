@@ -3,10 +3,12 @@ package RadioInfo.controller;
 import RadioInfo.view.MainView;
 
 public class MainController {
-    private final MainView view;
+    private MainView view;
 
     public MainController(){
-        view = new MainView(this, "RadioInfo");
-        view.setVisible(true);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            view = new MainView(this, "RadioInfo");
+            view.setVisible(true);
+        });
     }
 }
