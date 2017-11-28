@@ -2,6 +2,7 @@ package RadioInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -10,6 +11,7 @@ public class EpisodeObject {
     private Integer id;
     private String title;
     private String subtitle;
+    private String description;
     private Date startTimeUtc;
     private Date endTimeUtc;
     private URL url;
@@ -22,12 +24,15 @@ public class EpisodeObject {
     private Image image;
     private Image imageTemplate;
 
-    public EpisodeObject(Integer id, String title, String subtitle, Date startTimeUtc,
+    private static Image template;
+
+    public EpisodeObject(Integer id, String title, String subtitle, String description, Date startTimeUtc,
                          Date endTimeUtc, URL url, Integer programId, Integer channelId,
                          URL imageUrl, URL imageUrlTemplate){
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;
+        this.description = description;
         this.startTimeUtc = startTimeUtc;
         this.endTimeUtc = endTimeUtc;
         this.url = url;
@@ -37,12 +42,30 @@ public class EpisodeObject {
         this.imageUrlTemplate = imageUrlTemplate;
     }
 
+    public static boolean setTemplate(URL path){
+        try{
+            template = ImageIO.read(path);
+            if(template != null){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void loadImage() throws IOException {
-        image = ImageIO.read(imageUrl);
+        if(imageUrl != null){
+            image = ImageIO.read(imageUrl);
+        }
     }
 
     public void loadImageTemplate() throws IOException {
-        imageTemplate = ImageIO.read(imageUrlTemplate);
+        if(imageUrlTemplate != null){
+            imageTemplate = ImageIO.read(imageUrlTemplate);
+        }
     }
 
     public void setId(Integer id) {
@@ -56,6 +79,8 @@ public class EpisodeObject {
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
+
+    public void setDescription(String description) { this.description = description; }
 
     public void setStartTimeUtc(Date startTimeUtc) {
         this.startTimeUtc = startTimeUtc;
@@ -105,6 +130,8 @@ public class EpisodeObject {
         return subtitle;
     }
 
+    public String getDescription() { return description; }
+
     public Date getStartTimeUtc() {
         return startTimeUtc;
     }
@@ -134,10 +161,18 @@ public class EpisodeObject {
     }
 
     public Image getImage() {
-        return image;
+        if(image != null){
+            return image;
+        }else{
+            return template;
+        }
     }
 
     public Image getImageTemplate() {
-        return imageTemplate;
+        if(imageTemplate != null){
+            return imageTemplate;
+        }else{
+            return template;
+        }
     }
 }

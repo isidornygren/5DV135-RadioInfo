@@ -1,29 +1,21 @@
 package RadioInfo.view;
 
 import RadioInfo.ChannelObject;
-import RadioInfo.ChannelObjectBuilder;
 import RadioInfo.EpisodeObject;
-import RadioInfo.EpisodeObjectBuilder;
 import RadioInfo.ProgramTableModel.ProgramTableModel;
-import RadioInfo.controller.MainController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.text.html.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.net.URL;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class MainView {
     private final JFrame frame;
-    private final MainController controller;
     private JEditorPane episodeEditorPane;
     private JEditorPane channelEditorPane;
 
@@ -33,91 +25,29 @@ public class MainView {
     private JLabel episodeIconLabel;
     private JLabel channelIconLabel;
 
+    private ChannelMenuBar menuBar;
     private JTable table;
     private ProgramTableModel tableModel;
+    private ChannelObject channel;
 
 
-    public MainView(MainController controller, String title){
-        this.controller = controller;
-
+    public MainView(String title){
         frame = new JFrame(title);
+
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(300,300));
+        menuBar = new ChannelMenuBar();
 
-        frame.setJMenuBar(buildMenuBar());
+        frame.setJMenuBar(menuBar.getMenuBar());
         frame.add(buildChannel(), BorderLayout.PAGE_START);
         frame.add(buildTable(), BorderLayout.CENTER);
         frame.add(buildInformation(), BorderLayout.PAGE_END);
-
-        try {
-            ChannelObjectBuilder channelBuilder = new ChannelObjectBuilder();
-            ChannelObject tempChannel = channelBuilder.setName("P1").setChannelType("Rikskanal").setColor("31a1bd")
-                    .setId(132).setImageUrl(new URL("http://static-cdn.sr.se/sida/images/132/2186745_512_512.jpg?preset=api-default-square"))
-                    .setScheduleUrl(new URL("http://api.sr.se/v2/scheduledepisodes?channelid=132")).createChannelObject();
-            tempChannel.loadImage();
-            setChannel(tempChannel);
-
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-            EpisodeObjectBuilder episodeObjectBuilder = new EpisodeObjectBuilder();
-            EpisodeObject tempEpisode = episodeObjectBuilder.setImageUrl(new URL("http://static-cdn.sr.se/sida/images/4540/3634468_2048_1152.jpg?preset=api-default-square"))
-                    .setTitle("Ekonyheter").setChannelId(1).setStartTimeUtc(format.parse("2017-11-22T23:00:00Z")).setEndTimeUtc(format.parse("2017-11-22T23:02:00Z")).setId(1).setImageUrlTemplate(new URL("http://static-cdn.sr.se/sida/images/4540/3634468_2048_1152.jpg"))
-                    .setProgramId(1).setUrl(new URL("http://www.google.com/")).createEpisodeObject();
-            tempEpisode.loadImage();
-            setInformation(tempEpisode);
-
-            EpisodeObjectBuilder episodeObjectBuilder2 = new EpisodeObjectBuilder();
-            EpisodeObject tempEpisode2 = episodeObjectBuilder2.setImageUrl(new URL("http://static-cdn.sr.se/sida/images/2689/bb164a36-2ecc-4d21-a48e-363ad55541d9.jpg?preset=api-default-square"))
-                    .setTitle("Vaken").setChannelId(1).setStartTimeUtc(format.parse("2017-11-22T23:02:00Z")).setEndTimeUtc(format.parse("2017-11-23T00:00:00Z")).setId(1).setImageUrlTemplate(new URL("http://static-cdn.sr.se/sida/images/2689/bb164a36-2ecc-4d21-a48e-363ad55541d9.jpg"))
-                    .setProgramId(1).setSubtitle("med Wivianne Svedberg och Peter Sundberg").setUrl(new URL("http://www.google.com/")).createEpisodeObject();
-            tempEpisode2.loadImage();
-
-            ArrayList<EpisodeObject> tempEpisodes = new ArrayList<>();
-            tempEpisodes.add(tempEpisode);
-            tempEpisodes.add(tempEpisode2);
-            tempEpisodes.add(tempEpisode);
-            tempEpisodes.add(tempEpisode2);
-            tempEpisodes.add(tempEpisode);
-            tempEpisodes.add(tempEpisode2);
-            tempEpisodes.add(tempEpisode);
-            tempEpisodes.add(tempEpisode2);
-            tempEpisodes.add(tempEpisode);
-            tempEpisodes.add(tempEpisode2);
-            tableModel.updateList(tempEpisodes, tempChannel.getColor());
-            tableModel.setColor(tempChannel.getColor());
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
 
         frame.pack();
     }
 
     public void setVisible(boolean visible){
         frame.setVisible(visible);
-    }
-
-    private JMenuBar buildMenuBar(){
-        JMenuBar menuBar = new JMenuBar();
-        JMenuItem menuItem, subMenu, updateMenu;
-
-        subMenu = new JMenu("Channels");
-        subMenu.setMnemonic(KeyEvent.VK_C);
-
-        updateMenu = new JMenuItem("Update");
-        updateMenu.setMnemonic(KeyEvent.VK_U);
-
-        menuItem = new JMenuItem("P1");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_2, ActionEvent.ALT_MASK));
-        subMenu.add(menuItem);
-
-        menuItem = new JMenuItem("P2");
-        subMenu.add(menuItem);
-        menuBar.add(subMenu);
-        menuBar.add(updateMenu);
-        return menuBar;
     }
 
     private JPanel buildTable(){
@@ -143,7 +73,9 @@ public class MainView {
         // Listener for clicking on a cell in the table
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
-                setInformation(tableModel.getRowValue(table.getSelectedRow()));
+                if(tableModel.getRowCount() >= table.getSelectedRow() && table.getSelectedRow() >= 0 ){
+                    setInformation(tableModel.getRowValue(table.getSelectedRow()));
+                }
             }
         });
 
@@ -226,10 +158,20 @@ public class MainView {
         episodePanel.add(scrollPane, BorderLayout.CENTER);
 
         informationPanel.add(episodePanel, BorderLayout.CENTER);
-        informationPanel.add(informationControls, BorderLayout.PAGE_START);
+        //informationPanel.add(informationControls, BorderLayout.PAGE_START);//TODO remove all of this
         informationPanel.setVisible(false);
 
         return informationPanel;
+    }
+
+
+    public ChannelMenuBar getMenuBar(){
+        return this.menuBar;
+    }
+
+    public void setEpisodes(ArrayList<EpisodeObject> episodes, String color){
+        tableModel.updateList(episodes, color);
+        tableModel.setColor(color);
     }
 
     public void setChannel(ChannelObject channel){
@@ -238,6 +180,7 @@ public class MainView {
                 channelPanel.setVisible(false);
             }
         }else {
+            this.channel = channel;
             ImageIcon icon = new ImageIcon(channel.getImage().getScaledInstance(-1,64,Image.SCALE_SMOOTH));
             channelIconLabel.setIcon(icon);
             channelPanel.setOpaque(true);
@@ -246,6 +189,10 @@ public class MainView {
                 channelPanel.setVisible(true);
             }
         }
+    }
+
+    public ChannelObject getChannel(){
+        return this.channel;
     }
 
     public void setInformation(EpisodeObject episode){
@@ -270,8 +217,15 @@ public class MainView {
                     .append(" den ")
                     .append(new SimpleDateFormat("d/M YYYY").format(episode.getEndTimeUtc()))
                     .append("</small>");
-            stringBuilder.append("<p>").append(episode.getSubtitle()).append("</p>");
-            stringBuilder.append("<a href=\"").append(episode.getUrl().toString()).append("\">Lyssna här</a>");
+            if(episode.getSubtitle() != null){
+                stringBuilder.append("<p>").append(episode.getSubtitle()).append("</p>");
+            }
+            if(episode.getDescription() != null){
+                stringBuilder.append("<p>").append(episode.getDescription()).append("</p>");
+            }
+            if(episode.getUrl() != null){
+                stringBuilder.append("<a href=\"").append(episode.getUrl().toString()).append("\">Lyssna här</a>");
+            }
             episodeEditorPane.setText(stringBuilder.toString());
             ImageIcon icon = new ImageIcon(episode.getImage().getScaledInstance(128,-1,Image.SCALE_SMOOTH));
             episodeIconLabel.setIcon(icon);
@@ -281,6 +235,6 @@ public class MainView {
             }
         }
         // Updates frame size + more
-        //frame.pack();
+        frame.pack();
     }
 }

@@ -16,6 +16,8 @@ public class ChannelObject {
     URL scheduleUrl;
     private Image image;
 
+    public ChannelObject(){}
+
     public ChannelObject(String name, Integer id, String color, String tagline, URL imageUrl, URL siteUrl, URL scheduleUrl, String channelType) {
         this.name = name;
         this.id = id;
@@ -62,4 +64,6 @@ public class ChannelObject {
     public Image getImage() {
         return image;
     }
+
+    public URL getImageUrl() { return imageUrl;}
 }

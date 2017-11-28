@@ -7,6 +7,7 @@ public class EpisodeObjectBuilder {
     private Integer id;
     private String title;
     private String subtitle;
+    private String description;
     private Date startTimeUtc;
     private Date endTimeUtc;
     private URL url;
@@ -27,6 +28,11 @@ public class EpisodeObjectBuilder {
 
     public EpisodeObjectBuilder setSubtitle(String subtitle) {
         this.subtitle = subtitle;
+        return this;
+    }
+
+    public EpisodeObjectBuilder setDescription(String description) {
+        this.description = description;
         return this;
     }
 
@@ -66,6 +72,6 @@ public class EpisodeObjectBuilder {
     }
 
     public EpisodeObject createEpisodeObject() {
-        return new EpisodeObject(id, title, subtitle, startTimeUtc, endTimeUtc, url, programId, channelId, imageUrl, imageUrlTemplate);
+        return new EpisodeObject(id, title, subtitle, description, startTimeUtc, endTimeUtc, url, programId, channelId, imageUrl, imageUrlTemplate);
     }
 }
