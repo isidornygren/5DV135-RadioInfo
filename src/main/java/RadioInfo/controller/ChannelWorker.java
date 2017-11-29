@@ -7,6 +7,7 @@ import RadioInfo.view.ChannelView;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -15,20 +16,24 @@ import java.util.List;
  * @author Isidor Nygren
  */
 public class ChannelWorker extends SwingWorker<Boolean, Channel>{
-    private ChannelView channelView;
-    private SRParser parser;
+    private final ChannelView channelView;
+    private final SRParser parser;
     private InputStream inputStream;
 
     /**
      * Creates a new swing worker
      * @param channelView the view to render the channels to
      * @param parser the parser object that fetches the data
-     * @param inputStream the stream to fetch the data from
+     * @param url the stream to fetch the data from
      */
-    ChannelWorker(ChannelView channelView, SRParser parser, InputStream inputStream){
+    ChannelWorker(ChannelView channelView, SRParser parser, URL url){
         this.channelView = channelView;
         this.parser = parser;
-        this.inputStream = inputStream;
+        try {
+            this.inputStream = url.openStream();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -40,7 +45,6 @@ public class ChannelWorker extends SwingWorker<Boolean, Channel>{
         ArrayList<Channel> channels = parser.parseChannels(inputStream);
         for(Channel channel : channels){
             try {
-                System.out.println("Channel: " + channel.getName());
                 channel.loadImage();
                 if(isCancelled()){
                     return false;

@@ -9,13 +9,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
+/**
+ * Builds the Channel window
+ * @version 1.0
+ * @author Isidor Nygren
+ */
 public class ChannelView {
 
     private JFrame frame;
     private JPanel channelsPanel;
     private EventListenerList actionListeners = new EventListenerList();
 
+    /**
+     * Creates a new frame in which to render the channel window
+     */
     public ChannelView(){
         frame = new JFrame("Select channel");
         channelsPanel = new JPanel(new FlowLayout());
@@ -23,16 +30,22 @@ public class ChannelView {
 
         JScrollPane scroll = new JScrollPane(channelsPanel);
         frame.add(scroll);
-        //frame.setSize(400, 400);
         frame.pack();
     }
 
+    /**
+     * Sets the channelwindow to visible or not
+     * @param visible true = visible, false = not visible
+     */
     public void setVisible(boolean visible){
         frame.setVisible(visible);
     }
 
+    /**
+     * adds a channel to be rendered in the channel view
+     * @param channel the channel to be rendered
+     */
     public void addChannel(Channel channel){
-        System.out.println("Adding channel.");
         JPanel channelPanel = new JPanel();
         JLabel channelIcon = new JLabel();
 
@@ -59,20 +72,37 @@ public class ChannelView {
         channelsPanel.revalidate();
     }
 
+    /**
+     * Sets all the channels in the channel window
+     * @param channels an arraylist of channels
+     */
     public void setChannels(ArrayList<Channel> channels){
         for(Channel channel: channels){
             addChannel(channel);
         }
     }
 
+    /**
+     * Adds an actionlistener to each channel that is rendered allowing
+     * them to be pressable
+     * @param listener the listener that should be added to the buttons
+     */
     public void addActionListener(ActionListener listener){
         actionListeners.add(ActionListener.class, listener);
     }
 
+    /**
+     * Removes an listener from the listenerlist
+     * @param listener the listener to be removed
+     */
     public void removeActionListener(ActionListener listener){
         actionListeners.remove(ActionListener.class, listener);
     }
 
+    /**
+     * function that is called when an actionlistener returns an event
+     * @param event the event that occured
+     */
     protected void fireAction(ChannelSelectEvent event)
     {
         Object[] listeners = actionListeners.getListenerList();

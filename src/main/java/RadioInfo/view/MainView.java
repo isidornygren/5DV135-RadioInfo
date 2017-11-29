@@ -13,7 +13,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
+/**
+ * The main view object of RadioInfo
+ * @version 1.0
+ * @author Isidor Nygren
+ */
 public class MainView {
     private final JFrame frame;
     private JEditorPane episodeEditorPane;
@@ -25,18 +29,21 @@ public class MainView {
     private JLabel episodeIconLabel;
     private JLabel channelIconLabel;
 
-    private ChannelMenuBar menuBar;
+    private MainMenuBar menuBar;
     private JTable table;
     private ProgramTableModel tableModel;
     private Channel channel;
 
-
+    /**
+     * Builds the main window
+     * @param title the title of the main window
+     */
     public MainView(String title){
         frame = new JFrame(title);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(300,300));
-        menuBar = new ChannelMenuBar();
+        menuBar = new MainMenuBar();
 
         frame.setJMenuBar(menuBar.getMenuBar());
         frame.add(buildChannel(), BorderLayout.PAGE_START);
@@ -46,10 +53,18 @@ public class MainView {
         frame.pack();
     }
 
+    /**
+     * Sets if the main window is visible
+     * @param visible bool if the window should be visible or not
+     */
     public void setVisible(boolean visible){
         frame.setVisible(visible);
     }
 
+    /**
+     * Builds the schedule table that the episodes should be rendered to
+     * @return the table
+     */
     private JPanel buildTable(){
         JPanel panel = new JPanel(new BorderLayout());
 
@@ -60,7 +75,6 @@ public class MainView {
 
         table.setGridColor(Color.LIGHT_GRAY);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        //table.setShowGrid(false);
         table.setRowHeight(64);
         table.getColumn("Time").setMaxWidth(128);
         table.getColumn("Image").setMaxWidth(128);
@@ -71,11 +85,9 @@ public class MainView {
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // Listener for clicking on a cell in the table
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                if(tableModel.getRowCount() >= table.getSelectedRow() && table.getSelectedRow() >= 0 ){
-                    setInformation(tableModel.getRowValue(table.getSelectedRow()));
-                }
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if(tableModel.getRowCount() >= table.getSelectedRow() && table.getSelectedRow() >= 0 ){
+                setInformation(tableModel.getRowValue(table.getSelectedRow()));
             }
         });
 
@@ -85,6 +97,11 @@ public class MainView {
         return panel;
     }
 
+    /**
+     * Builds the channel header bar that is rendered at the top of the
+     * main window.
+     * @return the panel to be rendered at the top
+     */
     private JPanel buildChannel() {
         channelPanel = new JPanel(new BorderLayout());
         channelEditorPane = new JEditorPane();
@@ -93,7 +110,6 @@ public class MainView {
         channelEditorPane.setEditable(false);
         channelEditorPane.setOpaque(false);
         channelEditorPane.setFocusable(false);
-        //channelEditorPane.setPreferredSize(new Dimension(40));
 
         channelPanel.add(channelIconLabel, BorderLayout.LINE_START);
         channelPanel.add(channelEditorPane, BorderLayout.CENTER);
@@ -103,6 +119,10 @@ public class MainView {
         return channelPanel;
     }
 
+    /**
+     * Builds the information window that holds a specific channels information
+     * @return A Jpanel with information regarding a channel
+     */
     private JPanel buildInformation(){
         informationPanel = new JPanel(new BorderLayout());
         episodePanel = new JPanel(new BorderLayout());
@@ -148,32 +168,38 @@ public class MainView {
         styleSheet.addRule("p {font-family: \"Helvetica Neue\",Helvetica,Arial,Sans-serif;" +
                 "font-size: 12px;margin:0;padding:0;}");
 
-        JPanel informationControls = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton closeButton = new JButton("X");
-        closeButton.addActionListener(e -> setInformation(null));
-
-        informationControls.add(closeButton);
-
         episodePanel.add(episodeIconLabel, BorderLayout.LINE_START);
         episodePanel.add(scrollPane, BorderLayout.CENTER);
 
         informationPanel.add(episodePanel, BorderLayout.CENTER);
-        //informationPanel.add(informationControls, BorderLayout.PAGE_START);//TODO remove all of this
         informationPanel.setVisible(false);
 
         return informationPanel;
     }
 
-
-    public ChannelMenuBar getMenuBar(){
+    /**
+     * fetches the menubar of the view so that the listener objects can be accessed.
+     * @return the menubar
+     */
+    public MainMenuBar getMenuBar(){
         return this.menuBar;
     }
 
+    /**
+     * Sets the episodes in the main table
+     * @param episodes the episodes to set the table to
+     * @param color the color to render the time text in
+     */
     public void setEpisodes(ArrayList<Episode> episodes, String color){
         tableModel.updateList(episodes, color);
         tableModel.setColor(color);
     }
 
+    /**
+     * Sets the channel of the main window, renders an image in the top left corner
+     * and sets the color of the header bar
+     * @param channel the channel to set to
+     */
     public void setChannel(Channel channel){
         if(channel == null){
             if(channelPanel.isVisible()){
@@ -191,14 +217,26 @@ public class MainView {
         }
     }
 
+    /**
+     * returns the current channel
+     * @return the current channel
+     */
     public Channel getChannel(){
         return this.channel;
     }
 
+    /**
+     * returns the episode table
+     * @return the table
+     */
     public ProgramTableModel getTable() {
         return this.tableModel;
     }
 
+    /**
+     * Sets the information in the main window to a specific episode
+     * @param episode the episode to render information about
+     */
     public void setInformation(Episode episode){
         if(episode == null){
             if(informationPanel.isVisible()){

@@ -1,61 +1,54 @@
 package RadioInfo.controller;
 
 import RadioInfo.ProgramTableModel.ProgramTableModel;
-import RadioInfo.model.Channel;
-import RadioInfo.model.Episode;
-import RadioInfo.model.SRParser;
-import RadioInfo.view.ChannelMenuBar;
-import RadioInfo.view.ChannelSelectEvent;
-import RadioInfo.view.ChannelView;
-import RadioInfo.view.MainView;
+import RadioInfo.model.*;
+import RadioInfo.view.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.Date;
-
+/**
+ * Main controller that initiates the view and starts the swing workers
+ * @version 1.0
+ * @author Isidor Nygren
+ */
 public class MainController {
     private MainView view;
     private EpisodeWorker episodeWorker;
     private ChannelWorker channelWorker;
 
+    /**
+     * Starts the main EDT
+     */
     public MainController(){
         javax.swing.SwingUtilities.invokeLater(this::run);
     }
 
+    /**
+     * Initiates all the views and starts the workers
+     */
     private void run() {
         view = new MainView("RadioInfo");
         ChannelView channelView = new ChannelView();
-        ChannelMenuBar menuBar = view.getMenuBar();
+        MainMenuBar menuBar = view.getMenuBar();
 
         view.setVisible(true);
         SRParser xml = new SRParser("http://api.sr.se/api/v2/");
 
         menuBar.setChannelsButton(e -> channelView.setVisible(true));
         menuBar.setUpdateButton(e -> {
-            try {
                 Channel channel = view.getChannel();
                 Date today = new Date();
                 // Parse the xml episodes
-                fetchEpisodes(view.getTable(), xml, xml.buildScheduleUrl(channel.getId(), today).openStream());
-            }catch(IOException exception){
-                exception.printStackTrace(); //TODO handle error
-            }
+                fetchEpisodes(view.getTable(), xml, xml.buildScheduleUrl(channel.getId(), today));
         });
         try {
             Date today = new Date();
-            //ArrayList<Channel> channels = xml.parseChannels(xml.buildChannelUrl().openStream());
 
             // Load all images for the channels
             channelView.setVisible(true);
-            fetchChannels(channelView, xml, xml.buildChannelUrl().openStream());
-            /*for(Channel channel : channels){
-                channel.loadImage();
-            }*/
-
-            //channelView.setChannels(channels);
+            fetchChannels(channelView, xml, xml.buildChannelUrl());
 
             // When a specific channel is pressed
             channelView.addActionListener(new ActionListener() {
@@ -66,12 +59,7 @@ public class MainController {
                     view.setChannel(channel);
                     view.getTable().setColor(channel.getColor());
                     // Update channel list as well
-                    try {
-                        fetchEpisodes(view.getTable(), xml, xml.buildScheduleUrl(channel.getId(), today).openStream());
-
-                    }catch(IOException exception){
-                        exception.printStackTrace(); //TODO handle error
-                    }
+                    fetchEpisodes(view.getTable(), xml, xml.buildScheduleUrl(channel.getId(), today));
                 }
             });
         } catch (Exception e) {
@@ -79,20 +67,34 @@ public class MainController {
         }
     }
 
-    private void fetchEpisodes(ProgramTableModel table, SRParser parser, InputStream inputStream){
+    /**
+     * Clears the episodeworker if an instance of it is already running and reruns it with the new
+     * parameters
+     * @param table the table to render the episodes to
+     * @param parser a SRParser to be used for parsing the episodes
+     * @param url the url to parse the data from
+     */
+    private void fetchEpisodes(ProgramTableModel table, SRParser parser, URL url){
         if(episodeWorker != null){
             episodeWorker.cancel(true);
         }
         table.clear();
-        episodeWorker = new EpisodeWorker(table, parser, inputStream);
+        episodeWorker = new EpisodeWorker(table, parser, url);
         episodeWorker.execute();
     }
 
-    private void fetchChannels(ChannelView channelView, SRParser parser, InputStream inputStream){
+    /**
+     * Clears the channel worker if an instance of it is already running and reruns it with new
+     * parameters
+     * @param channelView the view to render the channels to
+     * @param parser the parser object that fetches the data
+     * @param url the stream to fetch the data from
+     */
+    private void fetchChannels(ChannelView channelView, SRParser parser, URL url){
         if(channelWorker != null){
             channelWorker.cancel(true);
         }
-        channelWorker = new ChannelWorker(channelView, parser, inputStream);
+        channelWorker = new ChannelWorker(channelView, parser, url);
         channelWorker.execute();
     }
 }

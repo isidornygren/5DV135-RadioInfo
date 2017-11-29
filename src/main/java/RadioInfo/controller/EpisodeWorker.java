@@ -7,6 +7,7 @@ import RadioInfo.model.SRParser;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -17,18 +18,22 @@ import java.util.List;
 public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
     private final ProgramTableModel table;
     private final SRParser parser;
-    private final InputStream inputStream;
+    private InputStream inputStream;
 
     /**
      * Creates a new swing worker
      * @param table table to render all the episodes to
      * @param parser the parser that is used to fetch the data
-     * @param inputStream the inputstream in which to fetch the data from
+     * @param url the inputstream in which to fetch the data from
      */
-    EpisodeWorker(ProgramTableModel table, SRParser parser, InputStream inputStream){
+    EpisodeWorker(ProgramTableModel table, SRParser parser, URL url){
         this.table = table;
         this.parser = parser;
-        this.inputStream = inputStream;
+        try {
+            this.inputStream = url.openStream();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -36,18 +41,18 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
      * @return true if finished and without error, otherwise false
      */
     @Override
-    protected Boolean doInBackground(){
+    protected Boolean doInBackground() {
         ArrayList<Episode> episodes = parser.parseSchedule(inputStream);
-        for(Episode episode : episodes){
+        for (Episode episode : episodes) {
             try {
-                    episode.loadImage();
-                    episode.loadImageTemplate();
-                if(isCancelled()){
+                episode.loadImage();
+                episode.loadImageTemplate();
+                if (isCancelled()) {
                     return false;
-                }else {
+                } else {
                     publish(episode);
                 }
-            }catch(IOException e){
+            } catch (IOException e) {
                 return false;
             }
         }
