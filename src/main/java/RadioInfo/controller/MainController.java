@@ -1,7 +1,7 @@
 package RadioInfo.controller;
 
-import RadioInfo.model.ChannelObject;
-import RadioInfo.model.EpisodeObject;
+import RadioInfo.model.Channel;
+import RadioInfo.model.Episode;
 import RadioInfo.view.ChannelMenuBar;
 import RadioInfo.view.ChannelSelectEvent;
 import RadioInfo.view.ChannelView;
@@ -21,7 +21,7 @@ public class MainController {
     }
 
     private void run() {
-        //TODO remove System.out.println(EpisodeObject.setTemplate(this.getClass().getResource("/images/template.png")));
+        //TODO remove System.out.println(Episode.setTemplate(this.getClass().getResource("/images/template.png")));
         view = new MainView("RadioInfo");
         ChannelView channelView = new ChannelView();
         view.setVisible(true);
@@ -37,12 +37,12 @@ public class MainController {
             public void actionPerformed(ActionEvent e) {
                 try {
                     XMLController xml = new XMLController();
-                    ChannelObject channel = view.getChannel();
+                    Channel channel = view.getChannel();
                     Date today = new Date();
 
-                    ArrayList<EpisodeObject> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
+                    ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
                     for(int i = 0; i < episodes.size(); i++){
-                        EpisodeObject episode = episodes.get(i);
+                        Episode episode = episodes.get(i);
                         System.out.println("Loading image for episode: " + episode.getTitle());
                         episode.loadImage();
                         episode.loadImageTemplate();
@@ -58,15 +58,15 @@ public class MainController {
             Date today = new Date();
 
             System.out.println("Parsing XML:");
-            ChannelObject channel = xml.parseChannel(xml.buildChannelUrl(132).openStream());
+            Channel channel = xml.parseChannel(xml.buildChannelUrl(132).openStream());
             System.out.println("Done parsing XML for channel.");
-            ArrayList<EpisodeObject> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
+            ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
             System.out.println("Done parsing XML for episodes.");
-            ArrayList<ChannelObject> channels = xml.parseChannels(xml.buildChannelUrl().openStream());
+            ArrayList<Channel> channels = xml.parseChannels(xml.buildChannelUrl().openStream());
             System.out.println("Done parsing XML for channels.");
 
             for(int i = 0; i < channels.size(); i++){
-                ChannelObject temp = channels.get(i);
+                Channel temp = channels.get(i);
                 System.out.println("Channel: " + temp.getName());
                 temp.loadImage();
             }
@@ -76,14 +76,14 @@ public class MainController {
             channelView.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ChannelObject channel = ((ChannelSelectEvent)e).getChannel();
-                    EpisodeObject.setTemplate(channel.getImageUrl());
+                    Channel channel = ((ChannelSelectEvent)e).getChannel();
+                    Episode.setTemplate(channel.getImageUrl());
                     view.setChannel(channel);
                     // Update channel list as well
                     try {
-                        ArrayList<EpisodeObject> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
+                        ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
                         for(int i = 0; i < episodes.size(); i++){
-                            EpisodeObject episode = episodes.get(i);
+                            Episode episode = episodes.get(i);
                             System.out.println("Loading image for episode: " + episode.getTitle());
                             episode.loadImage();
                             episode.loadImageTemplate();
@@ -99,12 +99,12 @@ public class MainController {
             //System.out.println("\nLoading images");
             //channel.loadImage();
             /*for(int i = 0; i < episodes.size(); i++){
-                EpisodeObject episode = episodes.get(i);
+                Episode episode = episodes.get(i);
                 System.out.println("Loading image for episode: " + episode.getTitle());
                 episode.loadImage();
                 episode.loadImageTemplate();
             }*/
-            /*EpisodeObject.setTemplate(channel.getImageUrl());
+            /*Episode.setTemplate(channel.getImageUrl());
             System.out.println("\nImages loaded");
             view.setChannel(channel);*/
             //view.setEpisodes(episodes, channel.getColor());

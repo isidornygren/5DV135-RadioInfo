@@ -12,19 +12,19 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class EpisodeObjectTest {
+public class EpisodeTest {
 
-    EpisodeObject episodeObject;
+    Episode episode;
     Date startTime;
     Date endTime;
 
     @Before
     public void setUp() throws Exception {
-        EpisodeObjectBuilder episodeObjectBuilder = new EpisodeObjectBuilder();
+        EpisodeBuilder episodeBuilder = new EpisodeBuilder();
         startTime = new Date();
         endTime = new Date();
         endTime.setTime(startTime.getTime() + 1000);
-        episodeObject = episodeObjectBuilder
+        episode = episodeBuilder
                 .setImageUrl(new File("src/test/resources/images/template.png").toURI().toURL())
                 .setTitle("Episode title")
                 .setChannelId(3)
@@ -41,110 +41,110 @@ public class EpisodeObjectTest {
 
     @After
     public void tearDown() throws Exception {
-        EpisodeObject.setTemplate(null);
-        episodeObject = null;
+        Episode.setTemplate(null);
+        episode = null;
     }
     @Test
     public void setTemplate() throws Exception {
-        EpisodeObject.setTemplate(new File("src/test/resources/images/template.png").toURI().toURL());
-        assertNotNull(episodeObject.getImage());
+        Episode.setTemplate(new File("src/test/resources/images/template.png").toURI().toURL());
+        assertNotNull(episode.getImage());
     }
 
     @Test
     public void setTitle() throws Exception {
-        episodeObject.setTitle("New title");
-        assertEquals(episodeObject.getTitle(), "New title");
+        episode.setTitle("New title");
+        assertEquals(episode.getTitle(), "New title");
     }
 
     @Test
     public void setStartTimeUtc() throws Exception {
         Date date = new Date();
-        episodeObject.setStartTimeUtc(date);
-        assertEquals(episodeObject.getStartTimeUtc(), date);
+        episode.setStartTimeUtc(date);
+        assertEquals(episode.getStartTimeUtc(), date);
     }
 
     @Test
     public void setImage() throws Exception {
-        Image oldImage = episodeObject.getImage();
-        episodeObject.setImage(ImageIO.read(new File("src/test/resources/images/template.png").toURI().toURL()));
-        assertNotEquals(episodeObject.getImage(),oldImage);
+        Image oldImage = episode.getImage();
+        episode.setImage(ImageIO.read(new File("src/test/resources/images/template.png").toURI().toURL()));
+        assertNotEquals(episode.getImage(),oldImage);
     }
 
     @Test
     public void getDescription() throws Exception {
-        assertEquals(episodeObject.getDescription(), "Description");
+        assertEquals(episode.getDescription(), "Description");
     }
 
     @Test
     public void getImage() throws Exception {
-        assertNull(episodeObject.getImage());
+        assertNull(episode.getImage());
     }
 
     @Test
     public void getImageTemplate() throws Exception {
-        assertNull(episodeObject.getImageTemplate());
+        assertNull(episode.getImageTemplate());
     }
 
     @Test
     public void loadImage() throws Exception {
-        episodeObject.loadImage();
-        assertNotNull(episodeObject.getImage());
+        episode.loadImage();
+        assertNotNull(episode.getImage());
     }
 
     @Test
     public void loadImageTemplate() throws Exception {
-        episodeObject.loadImageTemplate();
-        assertNotNull(episodeObject.getImageTemplate());
+        episode.loadImageTemplate();
+        assertNotNull(episode.getImageTemplate());
     }
 
     @Test
     public void getId() throws Exception {
-        assertTrue(episodeObject.getId() == 1);
+        assertTrue(episode.getId() == 1);
     }
 
     @Test
     public void getTitle() throws Exception {
-        assertEquals(episodeObject.getTitle(), "Episode title");
+        assertEquals(episode.getTitle(), "Episode title");
     }
 
     @Test
     public void getSubtitle() throws Exception {
-        assertEquals(episodeObject.getSubtitle(), "Subtitle");
+        assertEquals(episode.getSubtitle(), "Subtitle");
     }
 
     @Test
     public void getStartTimeUtc() throws Exception {
-        assertEquals(episodeObject.getStartTimeUtc(), startTime);
+        assertEquals(episode.getStartTimeUtc(), startTime);
     }
 
     @Test
     public void getEndTimeUtc() throws Exception {
-        assertEquals(episodeObject.getEndTimeUtc(), endTime);
+        assertEquals(episode.getEndTimeUtc(), endTime);
     }
 
     @Test
     public void getUrl() throws Exception {
-        assertEquals(episodeObject.getUrl(), new URL("http://www.google.com/"));
+        assertEquals(episode.getUrl(), new URL("http://www.google.com/"));
     }
 
     @Test
     public void getProgramId() throws Exception {
-        assertTrue(episodeObject.getProgramId() == 2);
+        assertTrue(episode.getProgramId() == 2);
     }
 
     @Test
     public void getChannelId() throws Exception {
-        assertTrue(episodeObject.getChannelId() == 3);
+        assertTrue(episode.getChannelId() == 3);
     }
 
     @Test
     public void getImageUrl() throws Exception {
-        assertEquals(episodeObject.getImageUrl(), new File("src/test/resources/images/template.png").toURI().toURL());
+        assertEquals(episode.getImageUrl(), new File("src/test/resources/images/template.png").toURI().toURL());
     }
 
     @Test
     public void getImageUrlTemplate() throws Exception {
-        assertEquals(episodeObject.getImageUrlTemplate(), new File("src/test/resources/images/template.png").toURI().toURL());
+        assertEquals(episode.getImageUrlTemplate(), new File("src/test/resources/images/template.png").toURI().toURL());
     }
 
 }

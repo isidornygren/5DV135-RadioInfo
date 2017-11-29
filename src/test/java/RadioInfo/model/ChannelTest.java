@@ -9,8 +9,8 @@ import java.net.URL;
 
 import static org.junit.Assert.*;
 
-public class ChannelObjectTest {
-    private ChannelObject channelObject;
+public class ChannelTest {
+    private Channel channel;
 
         /*      private String name;
             private Integer id;
@@ -24,8 +24,8 @@ public class ChannelObjectTest {
 
     @Before
     public void setUp() throws Exception {
-        ChannelObjectBuilder channelObjectBuilder = new ChannelObjectBuilder();
-        channelObject = channelObjectBuilder
+        ChannelBuilder channelBuilder = new ChannelBuilder();
+        channel = channelBuilder
                 .setName("Channel1")
                 .setId(1)
                 .setColor("000000")
@@ -39,58 +39,58 @@ public class ChannelObjectTest {
 
     @After
     public void tearDown() throws Exception {
-        channelObject = null;
+        channel = null;
     }
 
     @Test
     public void loadImage() throws Exception {
-        channelObject.loadImage();
-        assertNotNull(channelObject.getImage());
+        channel.loadImage();
+        assertNotNull(channel.getImage());
     }
 
     @Test
     public void getName() throws Exception {
-        assertEquals(channelObject.getName(), "Channel1");
+        assertEquals(channel.getName(), "Channel1");
     }
 
     @Test
     public void getId() throws Exception {
-        assertTrue(channelObject.getId() == 1);
+        assertTrue(channel.getId() == 1);
     }
 
     @Test
     public void getColor() throws Exception {
-        assertEquals(channelObject.getColor(), "000000");
+        assertEquals(channel.getColor(), "000000");
     }
 
     @Test
     public void getTagline() throws Exception {
-        assertEquals(channelObject.getTagline(), "This is the tagline");
+        assertEquals(channel.getTagline(), "This is the tagline");
     }
 
     @Test
     public void getChannelType() throws Exception {
-        assertEquals(channelObject.getChannelType(), "Rikskanal");
+        assertEquals(channel.getChannelType(), "Rikskanal");
     }
 
     @Test
     public void getSiteUrl() throws Exception {
-        assertEquals(channelObject.getSiteUrl().toString(), "http://www.google.com/");
+        assertEquals(channel.getSiteUrl().toString(), "http://www.google.com/");
     }
 
     @Test
     public void getScheduleUrl() throws Exception {
-        assertEquals(channelObject.getScheduleUrl().toString(), "http://www.google.com/");
+        assertEquals(channel.getScheduleUrl().toString(), "http://www.google.com/");
     }
 
     @Test
     public void getImage() throws Exception {
-        assertNull(channelObject.getImage());
+        assertNull(channel.getImage());
     }
 
     @Test
     public void getImageUrl() throws Exception {
-        assertEquals(channelObject.getImageUrl(),new File("src/test/resources/images/template.png").toURI().toURL());
+        assertEquals(channel.getImageUrl(),new File("src/test/resources/images/template.png").toURI().toURL());
     }
 
 }

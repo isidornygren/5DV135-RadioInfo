@@ -1,9 +1,9 @@
 package RadioInfo.controller;
 
-import RadioInfo.model.ChannelObject;
-import RadioInfo.model.ChannelObjectBuilder;
-import RadioInfo.model.EpisodeObject;
-import RadioInfo.model.EpisodeObjectBuilder;
+import RadioInfo.model.Channel;
+import RadioInfo.model.ChannelBuilder;
+import RadioInfo.model.Episode;
+import RadioInfo.model.EpisodeBuilder;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -23,12 +23,12 @@ public class XMLController {
 
     }
 
-    public ArrayList<ChannelObject> parseChannels(InputStream is){
+    public ArrayList<Channel> parseChannels(InputStream is){
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-            ArrayList<ChannelObject> results = new ArrayList<>();
+            ArrayList<Channel> results = new ArrayList<>();
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -52,7 +52,7 @@ public class XMLController {
         return null;
     }
 
-    public ChannelObject parseChannel(InputStream is){
+    public Channel parseChannel(InputStream is){
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -71,11 +71,11 @@ public class XMLController {
         return null;
     }
 
-    public ArrayList<EpisodeObject> parseSchedule(InputStream is){
+    public ArrayList<Episode> parseSchedule(InputStream is){
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            ArrayList<EpisodeObject> results = new ArrayList<>();
+            ArrayList<Episode> results = new ArrayList<>();
 
 
             Document doc = dBuilder.parse(is);
@@ -100,50 +100,50 @@ public class XMLController {
         return null;
     }
 
-    public EpisodeObject buildEpisode(Element element){
+    public Episode buildEpisode(Element element){
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        EpisodeObjectBuilder episodeObjectBuilder = new EpisodeObjectBuilder();
+        EpisodeBuilder episodeBuilder = new EpisodeBuilder();
         try {
-            episodeObjectBuilder.setId(Integer.parseInt(getElementValue(element, "episodeid")));
-            episodeObjectBuilder.setTitle(getElementValue(element, "title"));
-            episodeObjectBuilder.setSubtitle(getElementValue(element, "subtitle"));
-            episodeObjectBuilder.setDescription(getElementValue(element, "description"));
-            episodeObjectBuilder.setStartTimeUtc(format.parse(getElementValue(element, "starttimeutc")));
-            episodeObjectBuilder.setEndTimeUtc(format.parse(getElementValue(element, "endtimeutc")));
+            episodeBuilder.setId(Integer.parseInt(getElementValue(element, "episodeid")));
+            episodeBuilder.setTitle(getElementValue(element, "title"));
+            episodeBuilder.setSubtitle(getElementValue(element, "subtitle"));
+            episodeBuilder.setDescription(getElementValue(element, "description"));
+            episodeBuilder.setStartTimeUtc(format.parse(getElementValue(element, "starttimeutc")));
+            episodeBuilder.setEndTimeUtc(format.parse(getElementValue(element, "endtimeutc")));
             if (getElementValue(element, "imageurl") != null) {
-                episodeObjectBuilder.setImageUrl(new URL(getElementValue(element, "imageurl")));
+                episodeBuilder.setImageUrl(new URL(getElementValue(element, "imageurl")));
             }
             if (getElementValue(element, "imageurltemplate") != null) {
-                episodeObjectBuilder.setImageUrlTemplate(new URL(getElementValue(element, "imageurltemplate")));
+                episodeBuilder.setImageUrlTemplate(new URL(getElementValue(element, "imageurltemplate")));
             }
         }catch(MalformedURLException e){    //TODO error handling
             e.printStackTrace();
         }catch(ParseException e){
             e.printStackTrace();
         }
-        return episodeObjectBuilder.createEpisodeObject();
+        return episodeBuilder.createEpisodeObject();
     }
 
-    public ChannelObject buildChannel(Element element){
-        ChannelObjectBuilder channelObjectBuilder = new ChannelObjectBuilder();
+    public Channel buildChannel(Element element){
+        ChannelBuilder channelBuilder = new ChannelBuilder();
         try {
-            channelObjectBuilder.setId(Integer.parseInt(element.getAttribute("id")));
-            channelObjectBuilder.setName(element.getAttribute("name"));
-            channelObjectBuilder.setChannelType(element.getElementsByTagName("channeltype").item(0).getTextContent());
-            channelObjectBuilder.setColor(element.getElementsByTagName("color").item(0).getTextContent());
-            channelObjectBuilder.setImageUrl(new URL(element.getElementsByTagName("image").item(0).getTextContent()));
-            channelObjectBuilder.setImageUrl(new URL(element.getElementsByTagName("imagetemplate").item(0).getTextContent()));
+            channelBuilder.setId(Integer.parseInt(element.getAttribute("id")));
+            channelBuilder.setName(element.getAttribute("name"));
+            channelBuilder.setChannelType(element.getElementsByTagName("channeltype").item(0).getTextContent());
+            channelBuilder.setColor(element.getElementsByTagName("color").item(0).getTextContent());
+            channelBuilder.setImageUrl(new URL(element.getElementsByTagName("image").item(0).getTextContent()));
+            channelBuilder.setImageUrl(new URL(element.getElementsByTagName("imagetemplate").item(0).getTextContent()));
             if(element.getElementsByTagName("scheduleurl").getLength() > 0){
-                channelObjectBuilder.setScheduleUrl(new URL(element.getElementsByTagName("scheduleurl").item(0).getTextContent()));
+                channelBuilder.setScheduleUrl(new URL(element.getElementsByTagName("scheduleurl").item(0).getTextContent()));
             }
-            channelObjectBuilder.setSiteUrl(new URL(element.getElementsByTagName("siteurl").item(0).getTextContent()));
+            channelBuilder.setSiteUrl(new URL(element.getElementsByTagName("siteurl").item(0).getTextContent()));
         }catch(MalformedURLException e){
             //TODO handle error
             e.printStackTrace();
         }
 
-        return channelObjectBuilder.createChannelObject();
+        return channelBuilder.createChannelObject();
     }
 
     public URL buildChannelUrl(){

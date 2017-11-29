@@ -3,7 +3,7 @@ package RadioInfo.model;
 import java.net.URL;
 import java.util.Date;
 
-public class EpisodeObjectBuilder {
+public class EpisodeBuilder {
     private Integer id;
     private String title;
     private String subtitle;
@@ -16,62 +16,62 @@ public class EpisodeObjectBuilder {
     private URL imageUrl;
     private URL imageUrlTemplate;
 
-    public EpisodeObjectBuilder setId(Integer id) {
+    public EpisodeBuilder setId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public EpisodeObjectBuilder setTitle(String title) {
+    public EpisodeBuilder setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public EpisodeObjectBuilder setSubtitle(String subtitle) {
+    public EpisodeBuilder setSubtitle(String subtitle) {
         this.subtitle = subtitle;
         return this;
     }
 
-    public EpisodeObjectBuilder setDescription(String description) {
+    public EpisodeBuilder setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public EpisodeObjectBuilder setStartTimeUtc(Date startTimeUtc) {
+    public EpisodeBuilder setStartTimeUtc(Date startTimeUtc) {
         this.startTimeUtc = startTimeUtc;
         return this;
     }
 
-    public EpisodeObjectBuilder setEndTimeUtc(Date endTimeUtc) {
+    public EpisodeBuilder setEndTimeUtc(Date endTimeUtc) {
         this.endTimeUtc = endTimeUtc;
         return this;
     }
 
-    public EpisodeObjectBuilder setUrl(URL url) {
+    public EpisodeBuilder setUrl(URL url) {
         this.url = url;
         return this;
     }
 
-    public EpisodeObjectBuilder setProgramId(Integer programId) {
+    public EpisodeBuilder setProgramId(Integer programId) {
         this.programId = programId;
         return this;
     }
 
-    public EpisodeObjectBuilder setChannelId(Integer channelId) {
+    public EpisodeBuilder setChannelId(Integer channelId) {
         this.channelId = channelId;
         return this;
     }
 
-    public EpisodeObjectBuilder setImageUrl(URL imageUrl) {
+    public EpisodeBuilder setImageUrl(URL imageUrl) {
         this.imageUrl = imageUrl;
         return this;
     }
 
-    public EpisodeObjectBuilder setImageUrlTemplate(URL imageUrlTemplate) {
+    public EpisodeBuilder setImageUrlTemplate(URL imageUrlTemplate) {
         this.imageUrlTemplate = imageUrlTemplate;
         return this;
     }
 
-    public EpisodeObject createEpisodeObject() {
-        return new EpisodeObject(id, title, subtitle, description, startTimeUtc, endTimeUtc, url, programId, channelId, imageUrl, imageUrlTemplate);
+    public Episode createEpisodeObject() {
+        return new Episode(id, title, subtitle, description, startTimeUtc, endTimeUtc, url, programId, channelId, imageUrl, imageUrlTemplate);
     }
 }

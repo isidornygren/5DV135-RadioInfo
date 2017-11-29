@@ -1,6 +1,6 @@
 package RadioInfo.view;
 
-import RadioInfo.model.ChannelObject;
+import RadioInfo.model.Channel;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -31,8 +31,8 @@ public class ChannelView {
         frame.setVisible(visible);
     }
 
-    public void setChannels(ArrayList<ChannelObject> channels){
-        for(ChannelObject channel: channels){
+    public void setChannels(ArrayList<Channel> channels){
+        for(Channel channel: channels){
             JPanel channelPanel = new JPanel();
             JLabel channelIcon = new JLabel();
 

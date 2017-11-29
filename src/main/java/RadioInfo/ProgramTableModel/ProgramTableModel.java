@@ -1,6 +1,6 @@
 package RadioInfo.ProgramTableModel;
 
-import RadioInfo.model.EpisodeObject;
+import RadioInfo.model.Episode;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -12,11 +12,11 @@ import java.util.Locale;
 
 public class ProgramTableModel extends AbstractTableModel {
     private String[] columnNames;
-    private List<EpisodeObject> episodeObjects;
+    private List<Episode> episodes;
     private String color;
 
-    public ProgramTableModel(List<EpisodeObject> episodeObjects, String color){
-        this.episodeObjects = episodeObjects;
+    public ProgramTableModel(List<Episode> episodes, String color){
+        this.episodes = episodes;
         this.color = color;
         this.columnNames = new String[]{
                 "Time",
@@ -25,14 +25,14 @@ public class ProgramTableModel extends AbstractTableModel {
         };
     }
 
-    public void updateList(List<EpisodeObject> episodeObjects, String color){
-       this.episodeObjects = episodeObjects;
+    public void updateList(List<Episode> episodes, String color){
+       this.episodes = episodes;
        this.color = color;
        fireTableDataChanged();
     }
 
     public int getRowCount() {
-        return this.episodeObjects.size();
+        return this.episodes.size();
     }
 
     public int getColumnCount() {
@@ -56,12 +56,12 @@ public class ProgramTableModel extends AbstractTableModel {
         }
     }
 
-    public EpisodeObject getRowValue(int row){
-        return episodeObjects.get(row);
+    public Episode getRowValue(int row){
+        return episodes.get(row);
     }
 
     public Object getValueAt(int row, int col) {
-        EpisodeObject episode = episodeObjects.get(row);
+        Episode episode = episodes.get(row);
         switch(col){
             case 0:
                 String time = "<html><h2 style='color:#" + this.color + ";'>" + new SimpleDateFormat("HH:mm", new Locale("sv"))
@@ -89,13 +89,13 @@ public class ProgramTableModel extends AbstractTableModel {
         if(value != null){
             switch(col){
                 case 0:
-                    episodeObjects.get(row).setStartTimeUtc((Date)value);
+                    episodes.get(row).setStartTimeUtc((Date)value);
                     break;
                 case 1:
-                    episodeObjects.get(row).setImage((Image)value);
+                    episodes.get(row).setImage((Image)value);
                     break;
                 case 2:
-                    episodeObjects.get(row).setTitle((String)value);
+                    episodes.get(row).setTitle((String)value);
                     break;
             }
         }

@@ -1,17 +1,17 @@
 package RadioInfo.view;
 
-import RadioInfo.model.ChannelObject;
+import RadioInfo.model.Channel;
 import java.awt.event.ActionEvent;
 
 public class ChannelSelectEvent extends ActionEvent {
-    ChannelObject channel;
+    Channel channel;
 
-    public ChannelSelectEvent(ChannelObject channel,Object source, int id, String command){
+    public ChannelSelectEvent(Channel channel, Object source, int id, String command){
         super(source, id, command);
         this.channel = channel;
     }
 
-    public ChannelObject getChannel(){
+    public Channel getChannel(){
         return this.channel;
     }
 }

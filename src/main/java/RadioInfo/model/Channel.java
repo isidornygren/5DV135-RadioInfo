@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 
-public class ChannelObject {
+public class Channel {
     Integer id;
     String name;
     String color;
@@ -16,9 +16,9 @@ public class ChannelObject {
     URL scheduleUrl;
     private Image image;
 
-    public ChannelObject(){}
+    public Channel(){}
 
-    public ChannelObject(String name, Integer id, String color, String tagline, URL imageUrl, URL siteUrl, URL scheduleUrl, String channelType) {
+    public Channel(String name, Integer id, String color, String tagline, URL imageUrl, URL siteUrl, URL scheduleUrl, String channelType) {
         this.name = name;
         this.id = id;
         this.color = color;

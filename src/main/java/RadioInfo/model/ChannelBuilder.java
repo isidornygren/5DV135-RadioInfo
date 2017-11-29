@@ -2,7 +2,7 @@ package RadioInfo.model;
 
 import java.net.URL;
 
-public class ChannelObjectBuilder {
+public class ChannelBuilder {
     private String name;
     private Integer id;
     private String color;
@@ -12,47 +12,47 @@ public class ChannelObjectBuilder {
     private URL scheduleUrl;
     private String channelType;
 
-    public ChannelObjectBuilder setName(String name) {
+    public ChannelBuilder setName(String name) {
         this.name = name;
         return this;
     }
 
-    public ChannelObjectBuilder setId(Integer id) {
+    public ChannelBuilder setId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public ChannelObjectBuilder setColor(String color) {
+    public ChannelBuilder setColor(String color) {
         this.color = color;
         return this;
     }
 
-    public ChannelObjectBuilder setTagline(String tagline) {
+    public ChannelBuilder setTagline(String tagline) {
         this.tagline = tagline;
         return this;
     }
 
-    public ChannelObjectBuilder setImageUrl(URL imageUrl) {
+    public ChannelBuilder setImageUrl(URL imageUrl) {
         this.imageUrl = imageUrl;
         return this;
     }
 
-    public ChannelObjectBuilder setSiteUrl(URL siteUrl) {
+    public ChannelBuilder setSiteUrl(URL siteUrl) {
         this.siteUrl = siteUrl;
         return this;
     }
 
-    public ChannelObjectBuilder setScheduleUrl(URL scheduleUrl) {
+    public ChannelBuilder setScheduleUrl(URL scheduleUrl) {
         this.scheduleUrl = scheduleUrl;
         return this;
     }
 
-    public ChannelObjectBuilder setChannelType(String channelType) {
+    public ChannelBuilder setChannelType(String channelType) {
         this.channelType = channelType;
         return this;
     }
 
-    public ChannelObject createChannelObject() {
-        return new ChannelObject(name, id, color, tagline, imageUrl, siteUrl, scheduleUrl, channelType);
+    public Channel createChannelObject() {
+        return new Channel(name, id, color, tagline, imageUrl, siteUrl, scheduleUrl, channelType);
     }
 }

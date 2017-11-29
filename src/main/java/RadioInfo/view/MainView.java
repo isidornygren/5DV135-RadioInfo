@@ -1,7 +1,7 @@
 package RadioInfo.view;
 
-import RadioInfo.model.ChannelObject;
-import RadioInfo.model.EpisodeObject;
+import RadioInfo.model.Channel;
+import RadioInfo.model.Episode;
 import RadioInfo.ProgramTableModel.ProgramTableModel;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class MainView {
     private ChannelMenuBar menuBar;
     private JTable table;
     private ProgramTableModel tableModel;
-    private ChannelObject channel;
+    private Channel channel;
 
 
     public MainView(String title){
@@ -53,7 +53,7 @@ public class MainView {
     private JPanel buildTable(){
         JPanel panel = new JPanel(new BorderLayout());
 
-        ArrayList<EpisodeObject> tempEpisode = new ArrayList<>();
+        ArrayList<Episode> tempEpisode = new ArrayList<>();
         tableModel = new ProgramTableModel(tempEpisode, "000000");
 
         table = new JTable(tableModel);
@@ -169,12 +169,12 @@ public class MainView {
         return this.menuBar;
     }
 
-    public void setEpisodes(ArrayList<EpisodeObject> episodes, String color){
+    public void setEpisodes(ArrayList<Episode> episodes, String color){
         tableModel.updateList(episodes, color);
         tableModel.setColor(color);
     }
 
-    public void setChannel(ChannelObject channel){
+    public void setChannel(Channel channel){
         if(channel == null){
             if(channelPanel.isVisible()){
                 channelPanel.setVisible(false);
@@ -191,11 +191,11 @@ public class MainView {
         }
     }
 
-    public ChannelObject getChannel(){
+    public Channel getChannel(){
         return this.channel;
     }
 
-    public void setInformation(EpisodeObject episode){
+    public void setInformation(Episode episode){
         if(episode == null){
             if(informationPanel.isVisible()){
                 informationPanel.setVisible(false);

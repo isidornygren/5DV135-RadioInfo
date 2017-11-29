@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
-public class EpisodeObject {
+public class Episode {
     private Integer id;
     private String title;
     private String subtitle;
@@ -26,9 +26,9 @@ public class EpisodeObject {
 
     private static Image template;
 
-    public EpisodeObject(Integer id, String title, String subtitle, String description, Date startTimeUtc,
-                         Date endTimeUtc, URL url, Integer programId, Integer channelId,
-                         URL imageUrl, URL imageUrlTemplate){
+    public Episode(Integer id, String title, String subtitle, String description, Date startTimeUtc,
+                   Date endTimeUtc, URL url, Integer programId, Integer channelId,
+                   URL imageUrl, URL imageUrlTemplate){
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;
