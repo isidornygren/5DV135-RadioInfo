@@ -195,6 +195,10 @@ public class MainView {
         return this.channel;
     }
 
+    public ProgramTableModel getTable() {
+        return this.tableModel;
+    }
+
     public void setInformation(Episode episode){
         if(episode == null){
             if(informationPanel.isVisible()){

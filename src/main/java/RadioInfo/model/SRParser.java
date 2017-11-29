@@ -113,8 +113,6 @@ public class SRParser {
                     Element element = (Element) node;
                     if(element.getElementsByTagName("episodeid").getLength() > 0){
                         Episode episode = buildEpisode(element);
-                        episode.loadImage();
-                        episode.loadImageTemplate();
                         results.add(episode);
                     }
                 }

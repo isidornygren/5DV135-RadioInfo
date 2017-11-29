@@ -31,31 +31,37 @@ public class ChannelView {
         frame.setVisible(visible);
     }
 
+    public void addChannel(Channel channel){
+        System.out.println("Adding channel.");
+        JPanel channelPanel = new JPanel();
+        JLabel channelIcon = new JLabel();
+
+        channelPanel.setLayout(new BoxLayout(channelPanel, BoxLayout.Y_AXIS));
+        channelIcon.setIcon(new ImageIcon(channel.getImage().getScaledInstance(-1,32,Image.SCALE_SMOOTH)));
+        JLabel label = new JLabel(channel.getName());
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        channelIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        channelPanel.add(channelIcon);
+        channelPanel.add(label);
+        channelPanel.setPreferredSize(new Dimension(64, 64));
+
+        // Make every channel clickable
+        channelPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                setVisible(false);
+                fireAction(new ChannelSelectEvent(channel, this, 0, "command"));
+            }
+        });
+        channelsPanel.add(channelPanel);
+        // Update panel contents
+        channelsPanel.revalidate();
+    }
+
     public void setChannels(ArrayList<Channel> channels){
         for(Channel channel: channels){
-            JPanel channelPanel = new JPanel();
-            JLabel channelIcon = new JLabel();
-
-            channelPanel.setLayout(new BoxLayout(channelPanel, BoxLayout.Y_AXIS));
-            channelIcon.setIcon(new ImageIcon(channel.getImage().getScaledInstance(-1,32,Image.SCALE_SMOOTH)));
-            JLabel label = new JLabel(channel.getName());
-            label.setAlignmentX(Component.CENTER_ALIGNMENT);
-            channelIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            channelPanel.add(channelIcon);
-            channelPanel.add(label);
-            channelPanel.setPreferredSize(new Dimension(64, 64));
-
-            // Make every channel clickable
-            channelPanel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e){
-                    setVisible(false);
-                    fireAction(new ChannelSelectEvent(channel, this, 0, "command"));
-                }
-            });
-
-            channelsPanel.add(channelPanel);
+            addChannel(channel);
         }
     }
 

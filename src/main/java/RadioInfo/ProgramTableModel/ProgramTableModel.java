@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +46,22 @@ public class ProgramTableModel extends AbstractTableModel {
        this.episodes = episodes;
        this.color = color;
        fireTableDataChanged();
+    }
+
+    /**
+     * Clears the table of all its data
+     */
+    public void clear(){
+        this.episodes = new ArrayList<>();
+    }
+
+    /**
+     * Adds an episode to the table at the bottom of the table
+     * @param episode the episode to add
+     */
+    public void addEpisode(Episode episode){
+        this.episodes.add(episode);
+        fireTableDataChanged();
     }
 
     /**
