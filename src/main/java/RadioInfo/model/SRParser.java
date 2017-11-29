@@ -1,10 +1,12 @@
-package RadioInfo.controller;
+package RadioInfo.model;
 
 import RadioInfo.model.Channel;
 import RadioInfo.model.ChannelBuilder;
 import RadioInfo.model.Episode;
 import RadioInfo.model.EpisodeBuilder;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.*;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -14,26 +16,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class XMLController {
+public class SRParser {
 
     private static final String apiChannelurl = "http://api.sr.se/api/v2/channels";
     private static final String apiScheduleurl = "http://api.sr.se/api/v2/scheduledepisodes";
 
-    public XMLController(){
+    public SRParser(){
 
     }
 
-    public ArrayList<Channel> parseChannels(InputStream is){
+    public ArrayList<Channel> parseChannels(InputStream inputStream){
         try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = parseInputStream(inputStream);
 
             ArrayList<Channel> results = new ArrayList<>();
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-            Document doc = dBuilder.parse(is);
-            doc.getDocumentElement().normalize();
             doc.getElementsByTagName("channels").item(0).normalize();
 
             NodeList episodes = doc.getElementsByTagName("channel");//schedule.item(0).getChildNodes();
@@ -52,13 +51,10 @@ public class XMLController {
         return null;
     }
 
-    public Channel parseChannel(InputStream is){
+    public Channel parseChannel(InputStream inputStream){
         try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = parseInputStream(inputStream);
 
-            Document doc = dBuilder.parse(is);
-            doc.getDocumentElement().normalize();
             Node channel = doc.getElementsByTagName("channel").item(0);
 
             if (channel.getNodeType() == Node.ELEMENT_NODE) {
@@ -71,15 +67,11 @@ public class XMLController {
         return null;
     }
 
-    public ArrayList<Episode> parseSchedule(InputStream is){
+    public ArrayList<Episode> parseSchedule(InputStream inputStream){
         try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             ArrayList<Episode> results = new ArrayList<>();
 
-
-            Document doc = dBuilder.parse(is);
-            doc.getDocumentElement().normalize();
+            Document doc = parseInputStream(inputStream);
             doc.getElementsByTagName("schedule").item(0).normalize();
 
             NodeList episodes = doc.getElementsByTagName("scheduledepisode");//schedule.item(0).getChildNodes();
@@ -169,6 +161,14 @@ public class XMLController {
         }catch(MalformedURLException e){
             return null;
         }
+    }
+
+    private Document parseInputStream(InputStream inputStream) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(inputStream);
+        doc.getDocumentElement().normalize();
+        return doc;
     }
 
     private String getElementValue(Element element, String tagName){

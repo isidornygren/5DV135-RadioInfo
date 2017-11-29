@@ -2,6 +2,7 @@ package RadioInfo.controller;
 
 import RadioInfo.model.Channel;
 import RadioInfo.model.Episode;
+import RadioInfo.model.SRParser;
 import RadioInfo.view.ChannelMenuBar;
 import RadioInfo.view.ChannelSelectEvent;
 import RadioInfo.view.ChannelView;
@@ -36,7 +37,7 @@ public class MainController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    XMLController xml = new XMLController();
+                    SRParser xml = new SRParser();
                     Channel channel = view.getChannel();
                     Date today = new Date();
 
@@ -54,7 +55,7 @@ public class MainController {
             }
         });
         try {
-            XMLController xml = new XMLController();
+            SRParser xml = new SRParser();
             Date today = new Date();
 
             System.out.println("Parsing XML:");
