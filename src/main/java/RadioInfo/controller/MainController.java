@@ -37,7 +37,7 @@ public class MainController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SRParser xml = new SRParser();
+                    SRParser xml = new SRParser("http://api.sr.se/api/v2/");
                     Channel channel = view.getChannel();
                     Date today = new Date();
 
@@ -55,7 +55,7 @@ public class MainController {
             }
         });
         try {
-            SRParser xml = new SRParser();
+            SRParser xml = new SRParser("http://api.sr.se/api/v2/");
             Date today = new Date();
 
             System.out.println("Parsing XML:");

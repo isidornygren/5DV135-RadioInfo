@@ -1,9 +1,5 @@
 package RadioInfo.model;
 
-import RadioInfo.model.Channel;
-import RadioInfo.model.ChannelBuilder;
-import RadioInfo.model.Episode;
-import RadioInfo.model.EpisodeBuilder;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -18,29 +14,28 @@ import java.util.TimeZone;
 
 public class SRParser {
 
-    private static final String apiChannelurl = "http://api.sr.se/api/v2/channels";
-    private static final String apiScheduleurl = "http://api.sr.se/api/v2/scheduledepisodes";
+    private static String apiUrl;
+    private static final String apiChannelurl = "channels";
+    private static final String apiScheduleurl = "scheduledepisodes";
+    private DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    public SRParser(){
+    public SRParser(String apiUrl){
+        this.apiUrl = apiUrl;
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
     }
 
     public ArrayList<Channel> parseChannels(InputStream inputStream){
         try {
             Document doc = parseInputStream(inputStream);
-
             ArrayList<Channel> results = new ArrayList<>();
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-
             doc.getElementsByTagName("channels").item(0).normalize();
-
-            NodeList episodes = doc.getElementsByTagName("channel");//schedule.item(0).getChildNodes();
+            NodeList episodes = doc.getElementsByTagName("channel");
 
             for (int temp = 0; temp < episodes.getLength(); temp++) {
-                Node n = episodes.item(temp);
-                if (n.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) n;
+                Node node = episodes.item(temp);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
                     results.add(buildChannel(element));
                 }
             }
@@ -74,12 +69,12 @@ public class SRParser {
             Document doc = parseInputStream(inputStream);
             doc.getElementsByTagName("schedule").item(0).normalize();
 
-            NodeList episodes = doc.getElementsByTagName("scheduledepisode");//schedule.item(0).getChildNodes();
+            NodeList episodes = doc.getElementsByTagName("scheduledepisode");
 
             for (int temp = 0; temp < episodes.getLength(); temp++) {
-                Node n = episodes.item(temp);
-                if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName() == "scheduledepisode") {
-                    Element element = (Element) n;
+                Node node = episodes.item(temp);
+                if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() == "scheduledepisode") {
+                    Element element = (Element) node;
                     if(element.getElementsByTagName("episodeid").getLength() > 0){
                         results.add(buildEpisode(element));
                     }
@@ -93,16 +88,14 @@ public class SRParser {
     }
 
     public Episode buildEpisode(Element element){
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         EpisodeBuilder episodeBuilder = new EpisodeBuilder();
         try {
             episodeBuilder.setId(Integer.parseInt(getElementValue(element, "episodeid")));
             episodeBuilder.setTitle(getElementValue(element, "title"));
             episodeBuilder.setSubtitle(getElementValue(element, "subtitle"));
             episodeBuilder.setDescription(getElementValue(element, "description"));
-            episodeBuilder.setStartTimeUtc(format.parse(getElementValue(element, "starttimeutc")));
-            episodeBuilder.setEndTimeUtc(format.parse(getElementValue(element, "endtimeutc")));
+            episodeBuilder.setStartTimeUtc(timeFormat.parse(getElementValue(element, "starttimeutc")));
+            episodeBuilder.setEndTimeUtc(timeFormat.parse(getElementValue(element, "endtimeutc")));
             if (getElementValue(element, "imageurl") != null) {
                 episodeBuilder.setImageUrl(new URL(getElementValue(element, "imageurl")));
             }
@@ -140,7 +133,7 @@ public class SRParser {
 
     public URL buildChannelUrl(){
         try{
-            return new URL(apiChannelurl + "?pagination=false");
+            return new URL(apiUrl + "/" + apiChannelurl + "?pagination=false");
         }catch(MalformedURLException e){
             return null;
         }
@@ -148,7 +141,7 @@ public class SRParser {
 
     public URL buildChannelUrl(Integer channelId){
         try{
-            return new URL(apiChannelurl + "/" + channelId);
+            return new URL(apiUrl + "/" + apiChannelurl + "/" + channelId);
         }catch(MalformedURLException e){
             return null;
         }
@@ -157,13 +150,15 @@ public class SRParser {
     public URL buildScheduleUrl(Integer channelId, Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            return new URL(apiScheduleurl + "?channelid=" + channelId + "&date=" + sdf.format(date) + "&pagination=false");
+            return new URL(apiUrl + "/" + apiScheduleurl + "?channelid=" +
+                    channelId + "&date=" + sdf.format(date) + "&pagination=false");
         }catch(MalformedURLException e){
             return null;
         }
     }
 
-    private Document parseInputStream(InputStream inputStream) throws ParserConfigurationException, IOException, SAXException {
+    private Document parseInputStream(InputStream inputStream) throws
+            ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(inputStream);
