@@ -22,7 +22,6 @@ public class MainController {
     }
 
     private void run() {
-        //TODO remove System.out.println(Episode.setTemplate(this.getClass().getResource("/images/template.png")));
         view = new MainView("RadioInfo");
         ChannelView channelView = new ChannelView();
         ChannelMenuBar menuBar = view.getMenuBar();
@@ -37,12 +36,11 @@ public class MainController {
                 Date today = new Date();
                 // Parse the xml once again
                 ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
-                for(int i = 0; i < episodes.size(); i++){
-                    Episode episode = episodes.get(i);
+                for(Episode episode: episodes){
                     episode.loadImage();
                     episode.loadImageTemplate();
-                    view.setEpisodes(episodes, channel.getColor());
                 }
+                view.setEpisodes(episodes, channel.getColor());
             }catch(IOException exception){
                 exception.printStackTrace(); //TODO handle error
             }
@@ -51,9 +49,9 @@ public class MainController {
             Date today = new Date();
             ArrayList<Channel> channels = xml.parseChannels(xml.buildChannelUrl().openStream());
 
-            for(int i = 0; i < channels.size(); i++){
-                Channel temp = channels.get(i);
-                temp.loadImage();
+            // Load all images for the channels
+            for(Channel channel : channels){
+                channel.loadImage();
             }
 
             channelView.setChannels(channels);
@@ -68,19 +66,19 @@ public class MainController {
                     // Update channel list as well
                     try {
                         ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
-                        for(int i = 0; i < episodes.size(); i++){
-                            Episode episode = episodes.get(i);
+                        for(Episode episode: episodes){
                             episode.loadImage();
                             episode.loadImageTemplate();
-                            view.setEpisodes(episodes, channel.getColor());
                         }
+                        view.setEpisodes(episodes, channel.getColor());
+
                     }catch(IOException exception){
                         exception.printStackTrace(); //TODO handle error
                     }
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO handle error
         }
     }
 }
