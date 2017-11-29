@@ -1,7 +1,7 @@
 package RadioInfo.view;
 
-import RadioInfo.ChannelObject;
-import RadioInfo.EpisodeObject;
+import RadioInfo.model.ChannelObject;
+import RadioInfo.model.EpisodeObject;
 import RadioInfo.ProgramTableModel.ProgramTableModel;
 
 import javax.swing.*;

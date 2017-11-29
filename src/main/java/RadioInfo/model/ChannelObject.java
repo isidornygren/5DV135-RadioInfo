@@ -1,4 +1,4 @@
-package RadioInfo;
+package RadioInfo.model;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

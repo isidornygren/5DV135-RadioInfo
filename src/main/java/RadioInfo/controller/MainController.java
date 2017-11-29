@@ -1,7 +1,7 @@
 package RadioInfo.controller;
 
-import RadioInfo.ChannelObject;
-import RadioInfo.EpisodeObject;
+import RadioInfo.model.ChannelObject;
+import RadioInfo.model.EpisodeObject;
 import RadioInfo.view.ChannelMenuBar;
 import RadioInfo.view.ChannelSelectEvent;
 import RadioInfo.view.ChannelView;
@@ -10,9 +10,6 @@ import RadioInfo.view.MainView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 

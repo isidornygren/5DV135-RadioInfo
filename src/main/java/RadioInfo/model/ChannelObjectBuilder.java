@@ -1,4 +1,4 @@
-package RadioInfo;
+package RadioInfo.model;
 
 import java.net.URL;
 

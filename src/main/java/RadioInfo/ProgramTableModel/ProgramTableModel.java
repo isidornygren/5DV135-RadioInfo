@@ -1,6 +1,6 @@
 package RadioInfo.ProgramTableModel;
 
-import RadioInfo.EpisodeObject;
+import RadioInfo.model.EpisodeObject;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;

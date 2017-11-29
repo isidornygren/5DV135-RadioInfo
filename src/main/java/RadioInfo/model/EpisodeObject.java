@@ -1,4 +1,4 @@
-package RadioInfo;
+package RadioInfo.model;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class EpisodeObject {
     private Date startTimeUtc;
     private Date endTimeUtc;
     private URL url;
-    private Integer programId; //TODO Object
+    private Integer programId;
     private Integer channelId;
 
     private URL imageUrl;
@@ -42,17 +42,15 @@ public class EpisodeObject {
         this.imageUrlTemplate = imageUrlTemplate;
     }
 
-    public static boolean setTemplate(URL path){
+    public static void setTemplate(URL path){
         try{
-            template = ImageIO.read(path);
-            if(template != null){
-                return true;
+            if(path != null){
+                template = ImageIO.read(path);
             }else{
-                return false;
+                template = null;
             }
         }catch(IOException e){
-            e.printStackTrace();
-            return false;
+            e.printStackTrace(); //TODO add error handling
         }
     }
 
@@ -68,54 +66,16 @@ public class EpisodeObject {
         }
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    public void setDescription(String description) { this.description = description; }
 
     public void setStartTimeUtc(Date startTimeUtc) {
         this.startTimeUtc = startTimeUtc;
     }
 
-    public void setEndTimeUtc(Date endTimeUtc) {
-        this.endTimeUtc = endTimeUtc;
-    }
-
-    public void setUrl(URL url) {
-        this.url = url;
-    }
-
-    public void setProgramId(Integer programId) {
-        this.programId = programId;
-    }
-
-    public void setChannelId(Integer channelId) {
-        this.channelId = channelId;
-    }
-
-    public void setImageUrl(URL imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void setImageUrlTemplate(URL imageUrlTemplate) {
-        this.imageUrlTemplate = imageUrlTemplate;
-    }
-
     public void setImage(Image image) {
         this.image = image;
-    }
-
-    public void setImageTemplate(Image imageTemplate) {
-        this.imageTemplate = imageTemplate;
     }
 
     public Integer getId() {

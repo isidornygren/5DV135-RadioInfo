@@ -1,9 +1,9 @@
 package RadioInfo.controller;
 
-import RadioInfo.ChannelObject;
-import RadioInfo.ChannelObjectBuilder;
-import RadioInfo.EpisodeObject;
-import RadioInfo.EpisodeObjectBuilder;
+import RadioInfo.model.ChannelObject;
+import RadioInfo.model.ChannelObjectBuilder;
+import RadioInfo.model.EpisodeObject;
+import RadioInfo.model.EpisodeObjectBuilder;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -160,7 +160,7 @@ public class XMLController {
         }catch(MalformedURLException e){
             return null;
         }
-    }n
+    }
 
     public URL buildScheduleUrl(Integer channelId, Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
