@@ -14,10 +14,11 @@ import java.util.TimeZone;
 
 public class SRParser {
 
-    private static String apiUrl;
+    private String apiUrl;
     private static final String apiChannelurl = "channels";
     private static final String apiScheduleurl = "scheduledepisodes";
     private DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private ArrayList<String> errors = new ArrayList<>();
 
     public SRParser(String apiUrl){
         this.apiUrl = apiUrl;
@@ -40,8 +41,12 @@ public class SRParser {
                 }
             }
             return results;
-        } catch (Exception e) { //TODO error handling
-            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            errors.add("Error configuring ");
+        } catch (IOException e){
+
+        } catch (SAXException e){
+
         }
         return null;
     }
