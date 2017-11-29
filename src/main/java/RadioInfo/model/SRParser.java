@@ -12,20 +12,34 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ * Parsing model that connects to the SR API
+ * @version 1.0
+ * @author Isidor Nygren
+ */
 public class SRParser {
 
     private String apiUrl;
     private static final String apiChannelurl = "channels";
     private static final String apiScheduleurl = "scheduledepisodes";
     private DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    private ArrayList<String> errors = new ArrayList<>();
+    private ArrayList<ParsingError> errors = new ArrayList<>();
 
+    /**
+     * Sets up the api and corrects the timezone
+     * @param apiUrl the base url for the api
+     */
     public SRParser(String apiUrl){
         this.apiUrl = apiUrl;
         timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
     }
 
+    /**
+     * Parses all channel objects from an inputstream (buildChannelUrl)
+     * @param inputStream an inputstream for the sr channels url
+     * @return an arraylist with channelobjects parsed from the inputstream
+     */
     public ArrayList<Channel> parseChannels(InputStream inputStream){
         try {
             Document doc = parseInputStream(inputStream);
@@ -42,15 +56,20 @@ public class SRParser {
             }
             return results;
         } catch (ParserConfigurationException e) {
-            errors.add("Error configuring ");
+            errors.add(new ParsingError("Error configuring parser", e));
         } catch (IOException e){
-
+            errors.add(new ParsingError("Error opening stream", e));
         } catch (SAXException e){
-
+            errors.add(new ParsingError("Error parsing XML", e));
         }
         return null;
     }
 
+    /**
+     * Parses a specific channel from the sr API
+     * @param inputStream an inputstream for the sr channel (buildChannelUrl(integer))
+     * @return the parsed channel from the api
+     */
     public Channel parseChannel(InputStream inputStream){
         try {
             Document doc = parseInputStream(inputStream);
@@ -61,12 +80,21 @@ public class SRParser {
                 Element element = (Element) channel;
                 return buildChannel(element);
             }
-        } catch (Exception e) { //TODO error handling
-            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            errors.add(new ParsingError("Error configuring parser", e));
+        } catch (IOException e){
+            errors.add(new ParsingError("Error opening stream", e));
+        } catch (SAXException e){
+            errors.add(new ParsingError("Error parsing XML", e));
         }
         return null;
     }
 
+    /**
+     * Parses a schedule from the sr API
+     * @param inputStream a inputstream, use (buildScheduleUrl)
+     * @return an arraylist of the parsed episodes as Episode objects
+     */
     public ArrayList<Episode> parseSchedule(InputStream inputStream){
         try {
             ArrayList<Episode> results = new ArrayList<>();
@@ -86,12 +114,21 @@ public class SRParser {
                 }
             }
             return results;
-        } catch (Exception e) { //TODO error handling
-            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            errors.add(new ParsingError("Error configuring parser", e));
+        } catch (IOException e){
+            errors.add(new ParsingError("Error opening stream", e));
+        } catch (SAXException e){
+            errors.add(new ParsingError("Error parsing XML", e));
         }
         return null;
     }
 
+    /**
+     * Constructs an episode object from an xml element
+     * @param element a xml element to construct an episode object from
+     * @return the constructed episode object
+     */
     public Episode buildEpisode(Element element){
         EpisodeBuilder episodeBuilder = new EpisodeBuilder();
         try {
@@ -107,14 +144,19 @@ public class SRParser {
             if (getElementValue(element, "imageurltemplate") != null) {
                 episodeBuilder.setImageUrlTemplate(new URL(getElementValue(element, "imageurltemplate")));
             }
-        }catch(MalformedURLException e){    //TODO error handling
-            e.printStackTrace();
+        }catch(MalformedURLException e){
+            errors.add(new ParsingError("Error setting image URL for episode", e));
         }catch(ParseException e){
-            e.printStackTrace();
+            errors.add(new ParsingError("Error parsing image URL from XML", e));
         }
         return episodeBuilder.createEpisodeObject();
     }
 
+    /**
+     * Builds a channel object from an xml element
+     * @param element the element from which to build the object
+     * @return a channel object
+     */
     public Channel buildChannel(Element element){
         ChannelBuilder channelBuilder = new ChannelBuilder();
         try {
@@ -129,13 +171,17 @@ public class SRParser {
             }
             channelBuilder.setSiteUrl(new URL(element.getElementsByTagName("siteurl").item(0).getTextContent()));
         }catch(MalformedURLException e){
-            //TODO handle error
-            e.printStackTrace();
+            errors.add(new ParsingError("Error setting schedule URL for channel", e));
         }
 
         return channelBuilder.createChannelObject();
     }
 
+    /**
+     * Builds a channel url based on the api url used for constructing the object,
+     * makes sure the api returns all the data in one call
+     * @return a constructed URL which should return channels when called within the API
+     */
     public URL buildChannelUrl(){
         try{
             return new URL(apiUrl + "/" + apiChannelurl + "?pagination=false");
@@ -144,6 +190,12 @@ public class SRParser {
         }
     }
 
+    /**
+     * Builds a singular channel url where data regarding one specific channel will
+     * be returned when called.
+     * @param channelId the id of the channel to call
+     * @return an URL that should return the channel when called within the API
+     */
     public URL buildChannelUrl(Integer channelId){
         try{
             return new URL(apiUrl + "/" + apiChannelurl + "/" + channelId);
@@ -152,6 +204,12 @@ public class SRParser {
         }
     }
 
+    /**
+     * Builds an URL for calling the api and accessing the schedule for a specific channel
+     * @param channelId the channel to access the schedule for
+     * @param date the date the schedule should be checked for
+     * @return a URL that should return a schedule for that channel and date
+     */
     public URL buildScheduleUrl(Integer channelId, Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -162,6 +220,22 @@ public class SRParser {
         }
     }
 
+    /**
+     * returns an arraylist of all errors that was found during parsing of the API
+     * @return an arraylist of all the ParsingError objects
+     */
+    public ArrayList<ParsingError> getErrors(){
+        return errors;
+    }
+
+    /**
+     * Parses an XML inputstream and returns it into a normalized document
+     * @param inputStream the inputstream to parse
+     * @return A normalized Document
+     * @throws ParserConfigurationException it there is an inherit error in the parser
+     * @throws IOException if there was an error parsing the stream
+     * @throws SAXException if there was an error parsing the xml
+     */
     private Document parseInputStream(InputStream inputStream) throws
             ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -171,6 +245,12 @@ public class SRParser {
         return doc;
     }
 
+    /**
+     * Returns the value (text context) of en XML element
+     * @param element the element to check for the text context
+     * @param tagName the tag inside the element
+     * @return the string that was inside the tag
+     */
     private String getElementValue(Element element, String tagName){
         String ret = null;
         if(element.getElementsByTagName(tagName).getLength() > 0){
