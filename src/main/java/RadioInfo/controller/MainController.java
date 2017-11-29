@@ -34,12 +34,8 @@ public class MainController {
             try {
                 Channel channel = view.getChannel();
                 Date today = new Date();
-                // Parse the xml once again
+                // Parse the xml episodes
                 ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
-                for(Episode episode: episodes){
-                    episode.loadImage();
-                    episode.loadImageTemplate();
-                }
                 view.setEpisodes(episodes, channel.getColor());
             }catch(IOException exception){
                 exception.printStackTrace(); //TODO handle error
@@ -66,10 +62,6 @@ public class MainController {
                     // Update channel list as well
                     try {
                         ArrayList<Episode> episodes = xml.parseSchedule(xml.buildScheduleUrl(channel.getId(), today).openStream());
-                        for(Episode episode: episodes){
-                            episode.loadImage();
-                            episode.loadImageTemplate();
-                        }
                         view.setEpisodes(episodes, channel.getColor());
 
                     }catch(IOException exception){

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.text.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.TimeZone;
 
 /**
@@ -61,6 +62,8 @@ public class SRParser {
             errors.add(new ParsingError("Error opening stream", e));
         } catch (SAXException e){
             errors.add(new ParsingError("Error parsing XML", e));
+        }catch (NullPointerException e){
+            errors.add(new ParsingError("Error parsing XML, could not find element", e));
         }
         return null;
     }
@@ -109,7 +112,10 @@ public class SRParser {
                 if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() == "scheduledepisode") {
                     Element element = (Element) node;
                     if(element.getElementsByTagName("episodeid").getLength() > 0){
-                        results.add(buildEpisode(element));
+                        Episode episode = buildEpisode(element);
+                        episode.loadImage();
+                        episode.loadImageTemplate();
+                        results.add(episode);
                     }
                 }
             }
@@ -129,7 +135,7 @@ public class SRParser {
      * @param element a xml element to construct an episode object from
      * @return the constructed episode object
      */
-    public Episode buildEpisode(Element element){
+    private Episode buildEpisode(Element element){
         EpisodeBuilder episodeBuilder = new EpisodeBuilder();
         try {
             episodeBuilder.setId(Integer.parseInt(getElementValue(element, "episodeid")));
@@ -157,7 +163,7 @@ public class SRParser {
      * @param element the element from which to build the object
      * @return a channel object
      */
-    public Channel buildChannel(Element element){
+    private Channel buildChannel(Element element){
         ChannelBuilder channelBuilder = new ChannelBuilder();
         try {
             channelBuilder.setId(Integer.parseInt(element.getAttribute("id")));
