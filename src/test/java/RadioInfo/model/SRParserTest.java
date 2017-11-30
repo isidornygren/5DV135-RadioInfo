@@ -17,7 +17,11 @@ public class SRParserTest {
     private SRParser parser;
     @Before
     public void setUp() throws Exception {
-        parser = new SRParser("http://api.sr.se/api/v2", new Date());
+        //2017-11-28T23:00:00Z
+        Calendar cal = Calendar.getInstance();
+        cal.set(2017, Calendar.NOVEMBER, 29, 12, 00, 00);
+        Date theDate = cal.getTime();
+        parser = new SRParser("http://api.sr.se/api/v2", theDate);
     }
 
     @After
@@ -59,7 +63,7 @@ public class SRParserTest {
     @Test
     public void buildScheduleUrl() throws Exception {
         Calendar cal = Calendar.getInstance();
-        cal.set(2012, Calendar.DECEMBER, 23, 06, 06, 06); //Year, month, day of month, hours, minutes and seconds
+        cal.set(2012, Calendar.DECEMBER, 23, 06, 06, 06);
         Date theDate = cal.getTime();
         URL url = parser.buildScheduleUrl(132, theDate);
         assertEquals("http://api.sr.se/api/v2/scheduledepisodes?channelid=132&date=2012-12-23&pagination=false", url.toString());
