@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -29,6 +30,7 @@ public class Episode {
     private Image imageTemplate;
 
     private static Image template;
+    private boolean isInTime = false;
 
     /**
      * An episode object, mainly built using the EpisodeBuilder class to avoid unnecessary implementation
@@ -97,6 +99,21 @@ public class Episode {
         if(imageUrlTemplate != null){
             imageTemplate = ImageIO.read(imageUrlTemplate);
         }
+    }
+
+    /**
+     * Checks the if the ending time is 12 hours before the current time and if
+     * the starting time is 12 hours after the current time
+     * @param time the time to check with
+     */
+    public boolean checkTime(Date time){
+        if(this.endTimeUtc.after(new Date(time.getTime() - 3600 * 1000 * 12)) &&
+                this.startTimeUtc.before(new Date(time.getTime() + 3600 * 1000 * 12))){
+            this.isInTime = true;
+        }else{
+            this.isInTime = false;
+        }
+        return this.isInTime;
     }
 
     /**

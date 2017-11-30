@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 /**
  * Swing worker which parses episode data and renders it to the view
@@ -19,21 +20,20 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
     private final ProgramTableModel table;
     private final SRParser parser;
     private InputStream inputStream;
+    private Date date;
+    private Integer channelId;
 
     /**
      * Creates a new swing worker
      * @param table table to render all the episodes to
-     * @param parser the parser that is used to fetch the data
-     * @param url the inputstream in which to fetch the data from
+     * @param channelId the id of the channel to fetch episodes for
+     * @param date the date to fetch the episodes from
      */
-    EpisodeWorker(ProgramTableModel table, SRParser parser, URL url){
+    EpisodeWorker(ProgramTableModel table, Integer channelId, Date date){//URL url){
         this.table = table;
-        this.parser = parser;
-        try {
-            this.inputStream = url.openStream();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        this.parser = new SRParser("http://api.sr.se/api/v2/", date);
+        this.channelId = channelId;
+        this.date = date;
     }
 
     /**
@@ -42,19 +42,26 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
      */
     @Override
     protected Boolean doInBackground() {
-        ArrayList<Episode> episodes = parser.parseSchedule(inputStream);
-        for (Episode episode : episodes) {
-            try {
-                episode.loadImage();
-                episode.loadImageTemplate();
-                if (isCancelled()) {
-                    return false;
-                } else {
-                    publish(episode);
+        // Fetch the current list of episodes
+        try{
+            // Fetch the episodes for today, yesterday and tomorrow
+            for(int day = -1; day <= 1; day++){
+                System.out.println("Day: " + day);
+                Date date = new Date(this.date.getTime() + day*3600*1000*24);
+                InputStream stream = parser.buildScheduleUrl(this.channelId, date).openStream();
+                ArrayList<Episode> episodes = parser.parseSchedule(stream);
+                for (Episode episode : episodes) {
+                    episode.loadImage();
+                    episode.loadImageTemplate();
+                    if (isCancelled()) {
+                        return false;
+                    } else {
+                        publish(episode);
+                    }
                 }
-            } catch (IOException e) {
-                return false;
             }
+        }catch(IOException e){
+            return false;
         }
         return true;
     }

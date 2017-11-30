@@ -34,14 +34,14 @@ public class MainController {
         MainMenuBar menuBar = view.getMenuBar();
 
         view.setVisible(true);
-        SRParser xml = new SRParser("http://api.sr.se/api/v2/");
+        SRParser xml = new SRParser("http://api.sr.se/api/v2/", new Date());
 
         menuBar.setChannelsButton(e -> channelView.setVisible(true));
         menuBar.setUpdateButton(e -> {
                 Channel channel = view.getChannel();
                 Date today = new Date();
                 // Parse the xml episodes
-                fetchEpisodes(view.getTable(), xml, xml.buildScheduleUrl(channel.getId(), today));
+                fetchEpisodes(view.getTable(), channel.getId(), today);
         });
         try {
             Date today = new Date();
@@ -59,7 +59,7 @@ public class MainController {
                     view.setChannel(channel);
                     view.getTable().setColor(channel.getColor());
                     // Update channel list as well
-                    fetchEpisodes(view.getTable(), xml, xml.buildScheduleUrl(channel.getId(), today));
+                    fetchEpisodes(view.getTable(), channel.getId(), today);
                 }
             });
         } catch (Exception e) {
@@ -71,15 +71,15 @@ public class MainController {
      * Clears the episodeworker if an instance of it is already running and reruns it with the new
      * parameters
      * @param table the table to render the episodes to
-     * @param parser a SRParser to be used for parsing the episodes
-     * @param url the url to parse the data from
+     * @param channelId the channel to check the episodes for
+     * @param date the date to check the episodes for
      */
-    private void fetchEpisodes(ProgramTableModel table, SRParser parser, URL url){
+    private void fetchEpisodes(ProgramTableModel table, Integer channelId, Date date){
         if(episodeWorker != null){
             episodeWorker.cancel(true);
         }
         table.clear();
-        episodeWorker = new EpisodeWorker(table, parser, url);
+        episodeWorker = new EpisodeWorker(table, channelId, date);//url);
         episodeWorker.execute();
     }
 

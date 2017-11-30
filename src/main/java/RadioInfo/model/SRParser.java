@@ -25,15 +25,16 @@ public class SRParser {
     private static final String apiScheduleurl = "scheduledepisodes";
     private DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     private ArrayList<ParsingError> errors = new ArrayList<>();
+    private Date date;
 
     /**
      * Sets up the api and corrects the timezone
      * @param apiUrl the base url for the api
      */
-    public SRParser(String apiUrl){
+    public SRParser(String apiUrl, Date date){
         this.apiUrl = apiUrl;
         timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
+        this.date = date;
     }
 
     /**
@@ -113,7 +114,9 @@ public class SRParser {
                     Element element = (Element) node;
                     if(element.getElementsByTagName("episodeid").getLength() > 0){
                         Episode episode = buildEpisode(element);
-                        results.add(episode);
+                        if(episode != null){
+                            results.add(episode);
+                        }
                     }
                 }
             }
@@ -126,6 +129,41 @@ public class SRParser {
             errors.add(new ParsingError("Error parsing XML", e));
         }
         return null;
+    }
+
+    /**
+     * Parses a schedule from the sr API and adds it to a arraylist
+     * which it returns in the end
+     * @param inputStream a inputstream, use (buildScheduleUrl)
+     * @param episodes the arraylist to add the episodes to
+     * @return an arraylist of the parsed episodes as Episode objects
+     */
+    public ArrayList<Episode> parseSchedule(InputStream inputStream, ArrayList<Episode> episodes){
+        try {
+
+            Document doc = parseInputStream(inputStream);
+            doc.getElementsByTagName("schedule").item(0).normalize();
+
+            NodeList nodeList = doc.getElementsByTagName("scheduledepisode");
+
+            for (int temp = 0; temp < nodeList.getLength(); temp++) {
+                Node node = nodeList.item(temp);
+                if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() == "scheduledepisode") {
+                    Element element = (Element) node;
+                    if(element.getElementsByTagName("episodeid").getLength() > 0){
+                        Episode episode = buildEpisode(element);
+                        episodes.add(episode);
+                    }
+                }
+            }
+        } catch (ParserConfigurationException e) {
+            errors.add(new ParsingError("Error configuring parser", e));
+        } catch (IOException e){
+            errors.add(new ParsingError("Error opening stream", e));
+        } catch (SAXException e){
+            errors.add(new ParsingError("Error parsing XML", e));
+        }
+        return episodes;
     }
 
     /**
@@ -153,7 +191,12 @@ public class SRParser {
         }catch(ParseException e){
             errors.add(new ParsingError("Error parsing image URL from XML", e));
         }
-        return episodeBuilder.createEpisodeObject();
+        Episode episode = episodeBuilder.createEpisodeObject();
+        // If the episode is not inside the +/- 12 hour span around the date
+        if (!episode.checkTime(this.date)){
+            episode = null;
+        }
+        return episode;
     }
 
     /**

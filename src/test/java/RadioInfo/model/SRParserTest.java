@@ -17,7 +17,7 @@ public class SRParserTest {
     private SRParser parser;
     @Before
     public void setUp() throws Exception {
-        parser = new SRParser("http://api.sr.se/api/v2");
+        parser = new SRParser("http://api.sr.se/api/v2", new Date());
     }
 
     @After
