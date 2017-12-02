@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Date;
 /**
- * Main controller that initiates the view and starts the swing workers
+ * RadioInfo controller that initiates the view and starts the swing workers
  * @version 1.0
  * @author Isidor Nygren
  */

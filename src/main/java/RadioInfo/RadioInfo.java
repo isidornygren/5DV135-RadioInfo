@@ -2,9 +2,9 @@ package RadioInfo;
 
 import RadioInfo.controller.MainController;
 
-public class Main {
+public class RadioInfo {
 
     public static void main(String[] args) {
-	    MainController main = new MainController();
+	    new MainController();
     }
 }
