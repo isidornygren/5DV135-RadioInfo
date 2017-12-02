@@ -117,6 +117,15 @@ public class Episode {
     }
 
     /**
+     * Returns true if the programme has already ended and false if it is going
+     * to end in the future
+     * @return
+     */
+    public boolean hasEnded(){
+        return  (this.getEndTimeUtc().getTime() > new Date().getTime());
+    }
+
+    /**
      * Sets the title of the episode, used by the table model
      * to be able to update all the table data.
      * @param title the new title to update to

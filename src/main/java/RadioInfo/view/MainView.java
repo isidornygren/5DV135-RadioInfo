@@ -1,5 +1,6 @@
 package RadioInfo.view;
 
+import RadioInfo.ProgramTableModel.ProgramTableRenderer;
 import RadioInfo.model.Channel;
 import RadioInfo.model.Episode;
 import RadioInfo.ProgramTableModel.ProgramTableModel;
@@ -9,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.text.html.*;
 import java.awt.*;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,14 +45,22 @@ public class MainView {
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(300,300));
-        menuBar = new MainMenuBar();
 
-        frame.setJMenuBar(menuBar.getMenuBar());
         frame.add(buildChannel(), BorderLayout.PAGE_START);
         frame.add(buildTable(), BorderLayout.CENTER);
         frame.add(buildInformation(), BorderLayout.PAGE_END);
 
         frame.pack();
+    }
+
+    /**
+     * Sets the top menu bar of the main frame of the view
+     * @param menuBar the MeinMenuBar item to put as the menu
+     */
+    public void setMenu(MainMenuBar menuBar){
+        this.menuBar = menuBar;
+        frame.setJMenuBar(menuBar.getMenuBar());
+        frame.repaint();
     }
 
     /**
@@ -72,6 +82,9 @@ public class MainView {
         tableModel = new ProgramTableModel(tempEpisode, "000000");
 
         table = new JTable(tableModel);
+
+        ProgramTableRenderer renderer = new ProgramTableRenderer();
+        table.setDefaultRenderer(String.class, renderer);
 
         table.setGridColor(Color.LIGHT_GRAY);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
@@ -207,12 +220,17 @@ public class MainView {
             }
         }else {
             this.channel = channel;
-            ImageIcon icon = new ImageIcon(channel.getImage().getScaledInstance(-1,64,Image.SCALE_SMOOTH));
-            channelIconLabel.setIcon(icon);
-            channelPanel.setOpaque(true);
-            channelPanel.setBackground(Color.decode("#" + channel.getColor()));
-            if(!channelPanel.isVisible()){
-                channelPanel.setVisible(true);
+            try{
+                channel.loadImage();
+                ImageIcon icon = new ImageIcon(channel.getImage().getScaledInstance(-1,64,Image.SCALE_SMOOTH));
+                channelIconLabel.setIcon(icon);
+                channelPanel.setOpaque(true);
+                channelPanel.setBackground(Color.decode("#" + channel.getColor()));
+                if(!channelPanel.isVisible()){
+                    channelPanel.setVisible(true);
+                }
+            }catch(IOException e){
+                e.printStackTrace();
             }
         }
     }
@@ -246,7 +264,7 @@ public class MainView {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<h1>").append(episode.getTitle()).append("</h1>");
             // If the episode is currently playing
-            if(episode.getEndTimeUtc().getTime() > new Date().getTime()){
+            if(!episode.hasEnded()){
                 stringBuilder.append("<small>Sänds kl.");
             }else{
                 stringBuilder.append("<small>Sändes kl.");

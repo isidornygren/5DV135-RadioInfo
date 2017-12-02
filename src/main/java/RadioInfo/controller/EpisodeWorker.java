@@ -46,7 +46,6 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
         try{
             // Fetch the episodes for today, yesterday and tomorrow
             for(int day = -1; day <= 1; day++){
-                System.out.println("Day: " + day);
                 Date date = new Date(this.date.getTime() + day*3600*1000*24);
                 InputStream stream = parser.buildScheduleUrl(this.channelId, date).openStream();
                 ArrayList<Episode> episodes = parser.parseSchedule(stream);

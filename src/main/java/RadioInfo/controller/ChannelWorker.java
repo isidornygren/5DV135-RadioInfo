@@ -2,13 +2,13 @@ package RadioInfo.controller;
 
 import RadioInfo.model.Channel;
 import RadioInfo.model.SRParser;
-import RadioInfo.view.ChannelView;
+import RadioInfo.view.MainMenuBar;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 /**
  * Swing worker which parses channel data and renders it to the view
@@ -16,24 +16,16 @@ import java.util.List;
  * @author Isidor Nygren
  */
 public class ChannelWorker extends SwingWorker<Boolean, Channel>{
-    private final ChannelView channelView;
+    private final MainMenuBar menuBar;
     private final SRParser parser;
-    private InputStream inputStream;
 
     /**
      * Creates a new swing worker
-     * @param channelView the view to render the channels to
-     * @param parser the parser object that fetches the data
-     * @param url the stream to fetch the data from
+     * @param menuBar the view to render the channels to
      */
-    ChannelWorker(ChannelView channelView, SRParser parser, URL url){
-        this.channelView = channelView;
-        this.parser = parser;
-        try {
-            this.inputStream = url.openStream();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+    ChannelWorker(MainMenuBar menuBar){
+        this.parser = new SRParser("http://api.sr.se/api/v2/", new Date());
+        this.menuBar = menuBar;
     }
 
     /**
@@ -42,19 +34,18 @@ public class ChannelWorker extends SwingWorker<Boolean, Channel>{
      */
     @Override
     protected Boolean doInBackground(){
-        ArrayList<Channel> channels = parser.parseChannels(inputStream);
-        for(Channel channel : channels){
-            try {
-                channel.loadImage();
-                if(isCancelled()){
-                    return false;
-                }else {
-                    publish(channel);
-                }
-            }catch(IOException e){
-                e.printStackTrace();
-                return false;
+        try {
+            InputStream stream = parser.buildChannelUrl().openStream();
+            ArrayList<Channel> channels = parser.parseChannels(stream);
+            for(Channel channel : channels){
+                    if(isCancelled()){
+                        return false;
+                    }else {
+                        publish(channel);
+                    }
             }
+        }catch(IOException e){
+            return false;
         }
         return true;
     }
@@ -66,7 +57,7 @@ public class ChannelWorker extends SwingWorker<Boolean, Channel>{
     @Override
     protected void process(List<Channel> chunks) {
         for(Channel channel : chunks){
-            this.channelView.addChannel(channel);
+            this.menuBar.addChannel(channel);
         }
     }
 }

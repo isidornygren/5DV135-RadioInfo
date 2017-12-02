@@ -15,6 +15,7 @@ import java.util.Date;
  */
 public class MainController {
     private MainView view;
+    private MainMenuBar menuBar;
     private EpisodeWorker episodeWorker;
     private ChannelWorker channelWorker;
 
@@ -30,13 +31,10 @@ public class MainController {
      */
     private void run() {
         view = new MainView("RadioInfo");
-        ChannelView channelView = new ChannelView();
-        MainMenuBar menuBar = view.getMenuBar();
-
+        menuBar = new MainMenuBar();
+        view.setMenu(menuBar);
         view.setVisible(true);
-        SRParser xml = new SRParser("http://api.sr.se/api/v2/", new Date());
 
-        menuBar.setChannelsButton(e -> channelView.setVisible(true));
         menuBar.setUpdateButton(e -> {
                 Channel channel = view.getChannel();
                 Date today = new Date();
@@ -47,11 +45,10 @@ public class MainController {
             Date today = new Date();
 
             // Load all images for the channels
-            channelView.setVisible(true);
-            fetchChannels(channelView, xml, xml.buildChannelUrl());
+            fetchChannels(menuBar);
 
             // When a specific channel is pressed
-            channelView.addActionListener(new ActionListener() {
+            menuBar.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Channel channel = ((ChannelSelectEvent)e).getChannel();
@@ -86,15 +83,13 @@ public class MainController {
     /**
      * Clears the channel worker if an instance of it is already running and reruns it with new
      * parameters
-     * @param channelView the view to render the channels to
-     * @param parser the parser object that fetches the data
-     * @param url the stream to fetch the data from
+     * @param menuBar the view to render the channels to
      */
-    private void fetchChannels(ChannelView channelView, SRParser parser, URL url){
+    private void fetchChannels(MainMenuBar menuBar){
         if(channelWorker != null){
             channelWorker.cancel(true);
         }
-        channelWorker = new ChannelWorker(channelView, parser, url);
+        channelWorker = new ChannelWorker(menuBar);
         channelWorker.execute();
     }
 }

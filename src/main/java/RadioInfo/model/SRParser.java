@@ -10,7 +10,6 @@ import java.net.URL;
 import java.text.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.TimeZone;
 
 /**
