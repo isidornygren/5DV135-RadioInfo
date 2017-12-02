@@ -44,32 +44,32 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
         try{
             // Fetch the episodes for today, yesterday and tomorrow
             for(int day = -1; day <= 1; day++){
-                Date date = new Date(this.date.getTime() + day*3600*1000*24);
+                Date date = new Date(this.date.getTime() + day*86400000);
                 parser.parseSchedule(date);
+            }
+            if(parser.hasErrors()){
+                // Show the first error of the parser
+                new ErrorDialog(parser.getErrors().get(0));
+                cancel(true);
+            }else{
+                ArrayList<Episode> episodes = parser.getEpisodes();
                 if(parser.hasErrors()){
                     // Show the first error of the parser
                     new ErrorDialog(parser.getErrors().get(0));
                     cancel(true);
-                }else{
-                    ArrayList<Episode> episodes = parser.getEpisodes();
-                    if(parser.hasErrors()){
-                        // Show the first error of the parser
-                        new ErrorDialog(parser.getErrors().get(0));
-                        cancel(true);
-                    }else {
-                        for (Episode episode : episodes) {
-                            if (isCancelled()) {
-                                return false;
-                            } else {
-                                publish(episode);
-                            }
+                }else {
+                    for (Episode episode : episodes) {
+                        if (isCancelled()) {
+                            return false;
+                        } else {
+                            publish(episode);
                         }
-                        // Load all the episode images after the episodes has been published
-                        for (Episode episode : episodes) {
-                            episode.loadImage();
-                            episode.loadImageTemplate();
-                            this.table.fireTableDataChanged();
-                        }
+                    }
+                    // Load all the episode images after the episodes has been published
+                    for (Episode episode : episodes) {
+                        episode.loadImage();
+                        episode.loadImageTemplate();
+                        this.table.fireTableDataChanged();
                     }
                 }
             }
