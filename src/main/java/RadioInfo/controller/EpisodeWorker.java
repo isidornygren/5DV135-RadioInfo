@@ -45,7 +45,7 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
             // Fetch the episodes for today, yesterday and tomorrow
             for(int day = -1; day <= 1; day++){
                 Date date = new Date(this.date.getTime() + day*86400000);
-                parser.parseSchedule(date);
+                parser.parseSchedule(parser.buildScheduleUrl(date).openStream());
             }
             if(parser.hasErrors()){
                 // Show the first error of the parser
@@ -67,14 +67,19 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
                     }
                     // Load all the episode images after the episodes has been published
                     for (Episode episode : episodes) {
-                        episode.loadImage();
-                        episode.loadImageTemplate();
-                        this.table.fireTableDataChanged();
+                        try {
+                            episode.loadImage();
+                            episode.loadImageTemplate();
+                            this.table.fireTableDataChanged();
+                        }catch(IOException e){
+                            new ErrorDialog("Error","Error loading images from API",e);
+                            cancel(true);
+                        }
                     }
                 }
             }
         }catch(IOException e){
-            new ErrorDialog("Error","Error loading images from API",e);
+            new ErrorDialog("Error","Error building schedule API URL",e);
             cancel(true);
         }
         return true;

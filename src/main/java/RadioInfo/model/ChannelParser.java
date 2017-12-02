@@ -4,12 +4,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,11 +25,9 @@ public class ChannelParser extends Parser {
     /**
      * Parses all channel objects from an inputstream (buildChannelUrl)
      */
-    public void parseChannels(){
+    public void parseChannels(InputStream inputStream){
         try {
-            InputStream inputStream = buildChannelUrl().openStream();
             Document doc = parseInputStream(inputStream);
-            ArrayList<Channel> results = new ArrayList<>();
             doc.getElementsByTagName("channels").item(0).normalize();
             NodeList channelNodes = doc.getElementsByTagName("channel");
 
@@ -43,12 +38,6 @@ public class ChannelParser extends Parser {
                     channels.add(buildChannel(element));
                 }
             }
-        } catch (ParserConfigurationException e) {
-            errors.add(new ParsingError("Error configuring Parser", e));
-        } catch (IOException e){
-            errors.add(new ParsingError("Error opening stream", e));
-        } catch (SAXException e){
-            errors.add(new ParsingError("Error parsing XML", e));
         }catch (NullPointerException e){
             errors.add(new ParsingError("Error parsing XML, could not find element", e));
         }
@@ -68,21 +57,13 @@ public class ChannelParser extends Parser {
      * @return the parsed channel from the api
      */
     public Channel parseChannel(InputStream inputStream){
-        try {
-            Document doc = parseInputStream(inputStream);
+        Document doc = parseInputStream(inputStream);
 
-            Node channel = doc.getElementsByTagName("channel").item(0);
+        Node channel = doc.getElementsByTagName("channel").item(0);
 
-            if (channel.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) channel;
-                return buildChannel(element);
-            }
-        } catch (ParserConfigurationException e) {
-            errors.add(new ParsingError("Error configuring Parser", e));
-        } catch (IOException e){
-            errors.add(new ParsingError("Error opening stream", e));
-        } catch (SAXException e){
-            errors.add(new ParsingError("Error parsing XML", e));
+        if (channel.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element) channel;
+            return buildChannel(element);
         }
         return null;
     }

@@ -6,6 +6,7 @@ import RadioInfo.view.ErrorDialog;
 import RadioInfo.view.MainMenuBar;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -32,24 +33,28 @@ public class ChannelWorker extends SwingWorker<Boolean, Channel>{
      */
     @Override
     protected Boolean doInBackground(){
-        parser.parseChannels();
-        if(parser.hasErrors()){
-            new ErrorDialog(parser.getErrors().get(0));
-            cancel(true);
-        }else {
-            ArrayList<Channel> channels = parser.getChannels();
+        try {
+            parser.parseChannels(parser.buildChannelUrl().openStream());
             if (parser.hasErrors()) {
                 new ErrorDialog(parser.getErrors().get(0));
                 cancel(true);
             } else {
-                for (Channel channel : channels) {
-                    if (isCancelled()) {
-                        return false;
-                    } else {
-                        publish(channel);
+                ArrayList<Channel> channels = parser.getChannels();
+                if (parser.hasErrors()) {
+                    new ErrorDialog(parser.getErrors().get(0));
+                    cancel(true);
+                } else {
+                    for (Channel channel : channels) {
+                        if (isCancelled()) {
+                            return false;
+                        } else {
+                            publish(channel);
+                        }
                     }
                 }
             }
+        }catch(IOException exception){
+            new ErrorDialog("Error", "Could not build channel API URL", exception);
         }
         return true;
     }

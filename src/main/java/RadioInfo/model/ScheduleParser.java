@@ -4,9 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -39,11 +37,10 @@ public class ScheduleParser extends Parser {
     }
     /**
      * Builds an URL for calling the api and accessing the schedule for a specific channel
-     * @param channelId the channel to access the schedule for
      * @param date the date the schedule should be checked for
      * @return a URL that should return a schedule for that channel and date
      */
-    private URL buildScheduleUrl(Integer channelId, Date date){
+    public URL buildScheduleUrl(Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return new URL(apiUrl + "/" + apiScheduleUrl + "?channelid=" +
@@ -64,32 +61,23 @@ public class ScheduleParser extends Parser {
     /**
      * Parses a schedule from the sr API
      */
-    public void parseSchedule(Date date){
-        try {
-            InputStream inputStream = buildScheduleUrl(channelId, date).openStream();
-            Document doc = parseInputStream(inputStream);
-            doc.getElementsByTagName("schedule").item(0).normalize();
+    public void parseSchedule(InputStream inputStream){
+        Document doc = parseInputStream(inputStream);
+        doc.getElementsByTagName("schedule").item(0).normalize();
 
-            NodeList episodeNodes = doc.getElementsByTagName("scheduledepisode");
+        NodeList episodeNodes = doc.getElementsByTagName("scheduledepisode");
 
-            for (int temp = 0; temp < episodeNodes.getLength(); temp++) {
-                Node node = episodeNodes.item(temp);
-                if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() == "scheduledepisode") {
-                    Element element = (Element) node;
-                    if(element.getElementsByTagName("episodeid").getLength() > 0){
-                        Episode episode = buildEpisode(element);
-                        if(episode != null){
-                            episodes.add(episode);
-                        }
+        for (int temp = 0; temp < episodeNodes.getLength(); temp++) {
+            Node node = episodeNodes.item(temp);
+            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() == "scheduledepisode") {
+                Element element = (Element) node;
+                if(element.getElementsByTagName("episodeid").getLength() > 0){
+                    Episode episode = buildEpisode(element);
+                    if(episode != null){
+                        episodes.add(episode);
                     }
                 }
             }
-        } catch (ParserConfigurationException e) {
-            errors.add(new ParsingError("Error configuring Parser", e));
-        } catch (IOException e){
-            errors.add(new ParsingError("Error opening stream", e));
-        } catch (SAXException e){
-            errors.add(new ParsingError("Error parsing XML", e));
         }
     }
     /**
