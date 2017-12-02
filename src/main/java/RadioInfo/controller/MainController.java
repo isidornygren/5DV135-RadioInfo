@@ -37,31 +37,30 @@ public class MainController {
 
         menuBar.setUpdateButton(e -> {
                 Channel channel = view.getChannel();
-                Date today = new Date();
-                // Parse the xml episodes
-                fetchEpisodes(view.getTable(), channel.getId(), today);
-        });
-        try {
-            Date today = new Date();
-
-            // Load all images for the channels
-            fetchChannels(menuBar);
-
-            // When a specific channel is pressed
-            menuBar.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Channel channel = ((ChannelSelectEvent)e).getChannel();
-                    Episode.setTemplate(channel.getImageUrl());
-                    view.setChannel(channel);
-                    view.getTable().setColor(channel.getColor());
-                    // Update channel list as well
+                // If a channel is selected already
+                if(channel != null){
+                    Date today = new Date();
+                    // Parse the xml episodes
                     fetchEpisodes(view.getTable(), channel.getId(), today);
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace(); //TODO handle error
-        }
+        });
+        Date today = new Date();
+
+        // Load all images for the channels
+        fetchChannels(menuBar);
+
+        // When a specific channel is pressed
+        menuBar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Channel channel = ((ChannelSelectEvent)e).getChannel();
+                Episode.setTemplate(channel.getImageUrl());
+                view.setChannel(channel);
+                view.getTable().setColor(channel.getColor());
+                // Update channel list as well
+                fetchEpisodes(view.getTable(), channel.getId(), today);
+            }
+        });
     }
 
     /**
@@ -76,7 +75,7 @@ public class MainController {
             episodeWorker.cancel(true);
         }
         table.clear();
-        episodeWorker = new EpisodeWorker(table, channelId, date);//url);
+        episodeWorker = new EpisodeWorker(table, channelId, date);
         episodeWorker.execute();
     }
 

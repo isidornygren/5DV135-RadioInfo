@@ -2,12 +2,10 @@ package RadioInfo.controller;
 
 import RadioInfo.ProgramTableModel.ProgramTableModel;
 import RadioInfo.model.Episode;
-import RadioInfo.model.SRParser;
+import RadioInfo.model.ScheduleParser;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,8 +16,7 @@ import java.util.List;
  */
 public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
     private final ProgramTableModel table;
-    private final SRParser parser;
-    private InputStream inputStream;
+    private final ScheduleParser parser;
     private Date date;
     private Integer channelId;
 
@@ -31,7 +28,7 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
      */
     EpisodeWorker(ProgramTableModel table, Integer channelId, Date date){//URL url){
         this.table = table;
-        this.parser = new SRParser("http://api.sr.se/api/v2/", date);
+        this.parser = new ScheduleParser(channelId, date);
         this.channelId = channelId;
         this.date = date;
     }
@@ -47,8 +44,8 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
             // Fetch the episodes for today, yesterday and tomorrow
             for(int day = -1; day <= 1; day++){
                 Date date = new Date(this.date.getTime() + day*3600*1000*24);
-                InputStream stream = parser.buildScheduleUrl(this.channelId, date).openStream();
-                ArrayList<Episode> episodes = parser.parseSchedule(stream);
+                parser.parseSchedule(date);
+                ArrayList<Episode> episodes = parser.getEpisodes();
                 for (Episode episode : episodes) {
                     episode.loadImage();
                     episode.loadImageTemplate();
