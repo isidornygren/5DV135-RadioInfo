@@ -158,9 +158,9 @@ public class MainView {
                         try {
                             Desktop.getDesktop().browse(event.getURL().toURI());
                         }catch(java.net.URISyntaxException e){
-                            e.printStackTrace(); //TODO change error printout
+                            new ErrorDialog("Error", "episode URL syntax error", e);
                         }catch(java.io.IOException e){
-                            e.printStackTrace(); //TODO change error printout
+                            new ErrorDialog("Error", "Could not open episode URL", e);
                         }
                     }
                 }
@@ -230,7 +230,7 @@ public class MainView {
                     channelPanel.setVisible(true);
                 }
             }catch(IOException e){
-                e.printStackTrace();
+                new ErrorDialog("Error", "Could not load channel image", e);
             }
         }
     }

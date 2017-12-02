@@ -67,15 +67,11 @@ public class Episode {
      * Sets a default image for all episode objects
      * @param path the local path to the image as an URL
      */
-    public static void setTemplate(URL path){
-        try{
-            if(path != null){
-                template = ImageIO.read(path);
-            }else{
-                template = null;
-            }
-        }catch(IOException e){
-            e.printStackTrace(); //TODO add error handling
+    public static void setTemplate(URL path) throws IOException {
+        if(path != null){
+            template = ImageIO.read(path);
+        }else{
+            template = null;
         }
     }
 

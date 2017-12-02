@@ -6,6 +6,7 @@ import RadioInfo.view.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Date;
 /**
  * Main controller that initiates the view and starts the swing workers
@@ -53,7 +54,11 @@ public class MainController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Channel channel = ((ChannelSelectEvent)e).getChannel();
-                Episode.setTemplate(channel.getImageUrl());
+                try{
+                    Episode.setTemplate(channel.getImageUrl());
+                }catch(IOException exception){
+                    new ErrorDialog("Error", "Could not set episode template icons", exception);
+                }
                 view.setChannel(channel);
                 view.getTable().setColor(channel.getColor());
                 // Update channel list as well
