@@ -3,6 +3,7 @@ package RadioInfo.controller;
 import RadioInfo.ProgramTableModel.ProgramTableModel;
 import RadioInfo.model.Episode;
 import RadioInfo.model.ScheduleParser;
+import RadioInfo.view.ErrorDialog;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -45,19 +46,36 @@ public class EpisodeWorker extends SwingWorker<Boolean, Episode>{
             for(int day = -1; day <= 1; day++){
                 Date date = new Date(this.date.getTime() + day*3600*1000*24);
                 parser.parseSchedule(date);
-                ArrayList<Episode> episodes = parser.getEpisodes();
-                for (Episode episode : episodes) {
-                    episode.loadImage();
-                    episode.loadImageTemplate();
-                    if (isCancelled()) {
-                        return false;
-                    } else {
-                        publish(episode);
+                if(parser.hasErrors()){
+                    // Show the first error of the parser
+                    new ErrorDialog(parser.getErrors().get(0));
+                    cancel(true);
+                }else{
+                    ArrayList<Episode> episodes = parser.getEpisodes();
+                    if(parser.hasErrors()){
+                        // Show the first error of the parser
+                        new ErrorDialog(parser.getErrors().get(0));
+                        cancel(true);
+                    }else {
+                        for (Episode episode : episodes) {
+                            if (isCancelled()) {
+                                return false;
+                            } else {
+                                publish(episode);
+                            }
+                        }
+                        // Load all the episode images after the episodes has been published
+                        for (Episode episode : episodes) {
+                            episode.loadImage();
+                            episode.loadImageTemplate();
+                            this.table.fireTableDataChanged();
+                        }
                     }
                 }
             }
         }catch(IOException e){
-            return false;
+            new ErrorDialog("Error","Error loading images from API",e);
+            cancel(true);
         }
         return true;
     }

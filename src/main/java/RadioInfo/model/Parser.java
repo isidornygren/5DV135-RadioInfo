@@ -28,6 +28,14 @@ public class Parser {
     }
 
     /**
+     * Returns if the parser has encountered at least one error
+     * @return true if at least one error has been encountered
+     */
+    public boolean hasErrors(){
+        return (errors.size() > 0);
+    }
+
+    /**
      * Parses an XML inputstream and returns it into a normalized document
      * @param inputStream the inputstream to parse
      * @return A normalized Document

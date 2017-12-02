@@ -35,6 +35,13 @@ public class ParsingError {
     }
 
     /**
+     * Returns a formatted string to be displayed as a title
+     * @return a title string
+     */
+    public String getTitle(){
+        return "Error";
+    }
+    /**
      * Builds the error to a human readable string
      * @return the string
      */

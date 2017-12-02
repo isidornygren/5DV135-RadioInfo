@@ -2,6 +2,7 @@ package RadioInfo.controller;
 
 import RadioInfo.model.Channel;
 import RadioInfo.model.ChannelParser;
+import RadioInfo.view.ErrorDialog;
 import RadioInfo.view.MainMenuBar;
 
 import javax.swing.*;
@@ -32,13 +33,23 @@ public class ChannelWorker extends SwingWorker<Boolean, Channel>{
     @Override
     protected Boolean doInBackground(){
         parser.parseChannels();
-        ArrayList<Channel> channels = parser.getChannels();
-        for(Channel channel : channels){
-                if(isCancelled()){
-                    return false;
-                }else {
-                    publish(channel);
+        if(parser.hasErrors()){
+            new ErrorDialog(parser.getErrors().get(0));
+            cancel(true);
+        }else {
+            ArrayList<Channel> channels = parser.getChannels();
+            if (parser.hasErrors()) {
+                new ErrorDialog(parser.getErrors().get(0));
+                cancel(true);
+            } else {
+                for (Channel channel : channels) {
+                    if (isCancelled()) {
+                        return false;
+                    } else {
+                        publish(channel);
+                    }
                 }
+            }
         }
         return true;
     }

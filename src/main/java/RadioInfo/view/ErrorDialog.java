@@ -1,5 +1,7 @@
 package RadioInfo.view;
 
+import RadioInfo.model.ParsingError;
+
 import javax.swing.*;
 
 /**
@@ -8,6 +10,14 @@ import javax.swing.*;
  * @author Isidor Nygren
  */
 public class ErrorDialog {
+    /**
+     * Presents an error message via a ParsingError object
+     * @param error the error to present
+     */
+    public ErrorDialog(ParsingError error){
+        JOptionPane.showMessageDialog(new JFrame(), error.toString(),
+                error.getTitle(), JOptionPane.ERROR_MESSAGE);
+    }
     /**
      * Presents an error message to the end user through a message dialog frame
      * @param title the top title of the frame
