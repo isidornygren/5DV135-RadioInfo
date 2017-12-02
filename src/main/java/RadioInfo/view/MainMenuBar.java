@@ -18,9 +18,8 @@ import java.util.ArrayList;
 public class MainMenuBar {
 
     private JMenuBar bar;
-    private JMenu channelMenu, scheduleMenu;
-    private JMenuItem channelsMenu, updateMenu;
-    //private ArrayList<JMenuItem> channelItems = new ArrayList<>();
+    private JMenu channelMenu, scheduleMenu, p4Menu, extraMenu;
+    private JMenuItem updateMenu;
     private EventListenerList actionListeners = new EventListenerList();
 
     /**
@@ -31,17 +30,18 @@ public class MainMenuBar {
         bar = new JMenuBar();
         channelMenu = new JMenu("Channel");
         scheduleMenu = new JMenu("Schedule");
+        p4Menu = new JMenu("P4");
+        extraMenu = new JMenu("Extra");
+
+        channelMenu.add(p4Menu);
+        channelMenu.add(extraMenu);
 
         bar.add(channelMenu);
         bar.add(scheduleMenu);
 
-        channelsMenu = new JMenuItem("Select channel");
-        channelsMenu.setMnemonic(KeyEvent.VK_C);
-
         updateMenu = new JMenuItem("Update current schedule");
         updateMenu.setMnemonic(KeyEvent.VK_U);
 
-        channelMenu.add(channelsMenu);
         scheduleMenu.add(updateMenu);
     }
 
@@ -65,8 +65,13 @@ public class MainMenuBar {
                 fireAction(new ChannelSelectEvent(channel, this, 0, "command"));
             }
         });
-        //channelItems.add(channelItem);
-        channelMenu.add(channelItem);
+        if(channel.getName().startsWith("P4")){
+            p4Menu.add(channelItem);
+        }else if(channel.getName().startsWith("SR Extra")){
+            extraMenu.add(channelItem);
+        }else{
+            channelMenu.add(channelItem);
+        }
     }
 
     /**
