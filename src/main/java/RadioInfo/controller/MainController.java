@@ -49,20 +49,17 @@ public class MainController {
         fetchChannels(menuBar);
 
         // When a specific channel is pressed
-        menuBar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Channel channel = ((ChannelSelectEvent)e).getChannel();
-                try{
-                    Episode.setTemplate(channel.getImageUrl());
-                }catch(IOException exception){
-                    new ErrorDialog("Error", "Could not set episode template icons", exception);
-                }
-                view.setChannel(channel);
-                view.getTable().setColor(channel.getColor());
-                // Update channel list as well
-                fetchEpisodes(view.getTable(), channel.getId(), today);
+        menuBar.addActionListener(e -> {
+            Channel channel = ((ChannelSelectEvent)e).getChannel();
+            try{
+                Episode.setTemplate(channel.getImageUrl());
+            }catch(IOException exception){
+                new ErrorDialog("Error", "Could not set episode template icons", exception);
             }
+            view.setChannel(channel);
+            view.getTable().setColor(channel.getColor());
+            // Update channel list as well
+            fetchEpisodes(view.getTable(), channel.getId(), today);
         });
     }
 

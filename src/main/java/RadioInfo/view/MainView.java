@@ -147,18 +147,15 @@ public class MainView {
         episodeEditorPane.setPreferredSize(new Dimension(400,150));
 
         // Make hyperlinks open in the browser
-        episodeEditorPane.addHyperlinkListener(new HyperlinkListener() {
-            @Override
-            public void hyperlinkUpdate(HyperlinkEvent event) {
-                if(event.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
-                    if(Desktop.isDesktopSupported()) {
-                        try {
-                            Desktop.getDesktop().browse(event.getURL().toURI());
-                        }catch(java.net.URISyntaxException e){
-                            new ErrorDialog("Error", "episode URL syntax error", e);
-                        }catch(java.io.IOException e){
-                            new ErrorDialog("Error", "Could not open episode URL", e);
-                        }
+        episodeEditorPane.addHyperlinkListener(event -> {
+            if(event.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
+                if(Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().browse(event.getURL().toURI());
+                    }catch(java.net.URISyntaxException e){
+                        new ErrorDialog("Error", "episode URL syntax error", e);
+                    }catch(IOException e){
+                        new ErrorDialog("Error", "Could not open episode URL", e);
                     }
                 }
             }
