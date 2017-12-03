@@ -141,6 +141,7 @@ public class MainView {
         JScrollPane scrollPane = new JScrollPane(episodeEditorPane);
 
         scrollPane.setBorder(null);
+        scrollPane.getViewport().setOpaque(false);
         episodeEditorPane.setEditable(false);
         episodeEditorPane.setOpaque(false);
         episodeEditorPane.setFocusable(false);
@@ -168,6 +169,7 @@ public class MainView {
         HTMLEditorKit kit = new HTMLEditorKit();
         episodeEditorPane.setEditorKit(kit);
         StyleSheet styleSheet = kit.getStyleSheet();
+        styleSheet.addRule("body {background:transparent;}");
         styleSheet.addRule("h1 {font-family: Avenir-Heavy,\"Helvetica Neue\",Helvetica,Arial,Sans-serif;" +
                 "font-size: 20px;margin:0;padding:0;}");
         styleSheet.addRule("small {font-family: \"Helvetica Neue\",Helvetica,Arial,Sans-serif;" +
