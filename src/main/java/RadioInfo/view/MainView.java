@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static javax.swing.BorderFactory.createEmptyBorder;
+
 /**
  * The main view object of RadioInfo
  * @version 1.0
@@ -102,6 +105,7 @@ public class MainView {
         });
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(createEmptyBorder());
         panel.add(scrollPane);
 
         return panel;
@@ -141,6 +145,7 @@ public class MainView {
         JScrollPane scrollPane = new JScrollPane(episodeEditorPane);
 
         scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         episodeEditorPane.setEditable(false);
         episodeEditorPane.setOpaque(false);
