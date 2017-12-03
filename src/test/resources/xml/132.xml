@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sr>
+  <copyright>Copyright Sveriges Radio 2017. All rights reserved.</copyright>
+  <channel id="132" name="P1">
+    <image>http://static-cdn.sr.se/sida/images/132/2186745_512_512.jpg?preset=api-default-square</image>
+    <imagetemplate>http://static-cdn.sr.se/sida/images/132/2186745_512_512.jpg</imagetemplate>
+    <color>31a1bd</color>
+    <siteurl>http://sverigesradio.se/p1</siteurl>
+    <liveaudio id="132">
+      <url>http://sverigesradio.se/topsy/direkt/srapi/132.mp3</url>
+      <statkey>/app/direkt/p1[k(132)]</statkey>
+    </liveaudio>
+    <scheduleurl>http://api.sr.se/v2/scheduledepisodes?channelid=132</scheduleurl>
+    <channeltype>Rikskanal</channeltype>
+    <xmltvid>p1.sr.se</xmltvid>
+  </channel>
+</sr>
