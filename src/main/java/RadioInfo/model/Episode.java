@@ -115,7 +115,7 @@ public class Episode {
      * @return true if the program has ended otherwise false
      */
     public boolean hasEnded(){
-        return  (this.getEndTimeUtc().getTime() > new Date().getTime());
+        return  (this.getEndTimeUtc().getTime() < new Date().getTime());
     }
 
     /**

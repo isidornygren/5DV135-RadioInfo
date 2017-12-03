@@ -99,9 +99,9 @@ public class ProgramTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int col) {
         switch (col){
             case 0:
-                return Integer.class;
+                return Integer.class; //Integer
             case 1:
-                return ImageIcon.class;
+                return ImageIcon.class; //ImageIcon
             case 2:
                 return String.class;
             default: return null;
@@ -128,8 +128,16 @@ public class ProgramTableModel extends AbstractTableModel {
         Episode episode = episodes.get(row);
         switch(col){
             case 0:
-                String time = "<html><h2 style='color:#" + this.color + ";'>" + new SimpleDateFormat("HH:mm", new Locale("sv"))
-                        .format(episode.getStartTimeUtc()) + "</h2></html>";
+                String time;
+                if(episode.hasEnded()){
+                    time = "<html><h2 style='color:#aaaaaa;'>(" +
+                            new SimpleDateFormat("HH:mm", new Locale("sv"))
+                            .format(episode.getStartTimeUtc()) + ")</h2></html>";
+                }else {
+                    time = "<html><h2 style='color:#" + this.color + ";'>" +
+                            new SimpleDateFormat("HH:mm", new Locale("sv"))
+                            .format(episode.getStartTimeUtc()) + "</h2></html>";
+                }
                 return time;
             case 1:
                 return new ImageIcon(episode.getImage().getScaledInstance(-1,50,Image.SCALE_SMOOTH));
@@ -150,6 +158,14 @@ public class ProgramTableModel extends AbstractTableModel {
     public void setColor(String color){
         this.color = color;
         fireTableDataChanged();
+    }
+
+    /**
+     * Gets the color of the highlights of the table
+     * @return the hex for the color as a string
+     */
+    public String getColor(){
+        return this.color;
     }
 
     /**

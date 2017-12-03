@@ -1,6 +1,5 @@
 package RadioInfo.view;
 
-import RadioInfo.ProgramTableModel.ProgramTableRenderer;
 import RadioInfo.model.Channel;
 import RadioInfo.model.Episode;
 import RadioInfo.ProgramTableModel.ProgramTableModel;
@@ -83,9 +82,6 @@ public class MainView {
 
         table = new JTable(tableModel);
 
-        ProgramTableRenderer renderer = new ProgramTableRenderer();
-        table.setDefaultRenderer(String.class, renderer);
-
         table.setGridColor(Color.LIGHT_GRAY);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         table.setRowHeight(64);
@@ -96,6 +92,8 @@ public class MainView {
         table.setTableHeader(null);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setRowMargin(0);
+        table.getColumnModel().setColumnMargin(0);
 
         // Listener for clicking on a cell in the table
         table.getSelectionModel().addListSelectionListener(event -> {
@@ -144,6 +142,8 @@ public class MainView {
         episodeIconLabel = new JLabel();
         JScrollPane scrollPane = new JScrollPane(episodeEditorPane);
 
+        episodeIconLabel.setBorder(new EmptyBorder(0,0,0,5));
+        episodePanel.setOpaque(false);
         scrollPane.setBorder(null);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
@@ -168,7 +168,8 @@ public class MainView {
         });
 
         // Add padding to the panel
-        informationPanel.setBorder(new EmptyBorder(10,10,10,10));
+        informationPanel.setBorder(BorderFactory.createMatteBorder(
+                1, 0, 0, 0, Color.LIGHT_GRAY));
 
         // Style the editorPane
         HTMLEditorKit kit = new HTMLEditorKit();
@@ -184,8 +185,10 @@ public class MainView {
 
         episodePanel.add(episodeIconLabel, BorderLayout.LINE_START);
         episodePanel.add(scrollPane, BorderLayout.CENTER);
+        episodePanel.setBorder(new EmptyBorder(10,10,10,10));
 
         informationPanel.add(episodePanel, BorderLayout.CENTER);
+        informationPanel.setBackground(Color.WHITE);
         informationPanel.setVisible(false);
 
         return informationPanel;
