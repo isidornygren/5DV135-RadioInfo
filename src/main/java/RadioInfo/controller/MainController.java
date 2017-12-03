@@ -15,7 +15,6 @@ import java.util.Date;
  */
 public class MainController {
     private MainView view;
-    private MainMenuBar menuBar;
     private EpisodeWorker episodeWorker;
     private ChannelWorker channelWorker;
 
@@ -31,7 +30,7 @@ public class MainController {
      */
     private void run() {
         view = new MainView("RadioInfo");
-        menuBar = new MainMenuBar();
+        MainMenuBar menuBar = new MainMenuBar();
         view.setMenu(menuBar);
         view.setVisible(true);
 

@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -30,13 +29,12 @@ public class Episode {
     private Image imageTemplate;
 
     private static Image template;
-    private boolean isInTime = false;
 
     /**
      * An episode object, mainly built using the EpisodeBuilder class to avoid unnecessary implementation
      * of methods in this class. Used to parse the xml objects from the sr api.
-     * @param id
-     * @param title
+     * @param id episode id
+     * @param title title of the episode
      * @param subtitle short description
      * @param description long description
      * @param startTimeUtc date object containing the start time in UTC
@@ -103,19 +101,18 @@ public class Episode {
      * @param time the time to check with
      */
     public boolean checkTime(Date time){
+        boolean isInTime = false;
         if(this.endTimeUtc.after(new Date(time.getTime() - 3600 * 1000 * 12)) &&
                 this.startTimeUtc.before(new Date(time.getTime() + 3600 * 1000 * 12))){
-            this.isInTime = true;
-        }else{
-            this.isInTime = false;
+            isInTime = true;
         }
-        return this.isInTime;
+        return isInTime;
     }
 
     /**
      * Returns true if the programme has already ended and false if it is going
      * to end in the future
-     * @return
+     * @return true if the program has ended otherwise false
      */
     public boolean hasEnded(){
         return  (this.getEndTimeUtc().getTime() > new Date().getTime());

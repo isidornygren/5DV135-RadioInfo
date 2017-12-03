@@ -5,7 +5,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -69,7 +68,7 @@ public class ScheduleParser extends Parser {
 
         for (int temp = 0; temp < episodeNodes.getLength(); temp++) {
             Node node = episodeNodes.item(temp);
-            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() == "scheduledepisode") {
+            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("scheduledepisode")) {
                 Element element = (Element) node;
                 if(element.getElementsByTagName("episodeid").getLength() > 0){
                     Episode episode = buildEpisode(element);

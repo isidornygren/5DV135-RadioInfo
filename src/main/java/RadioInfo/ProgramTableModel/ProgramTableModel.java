@@ -156,7 +156,7 @@ public class ProgramTableModel extends AbstractTableModel {
      * Sets a new value at the specific column and row
      * @param value the new value to be set
      * @param row row position
-     * @param col
+     * @param col column position
      */
     public void setValueAt(Object value, int row, int col){
         if(value != null){

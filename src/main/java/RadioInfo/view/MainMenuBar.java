@@ -4,11 +4,9 @@ import RadioInfo.model.Channel;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 /**
  * Builds the main menu bar for the application
@@ -18,7 +16,9 @@ import java.util.ArrayList;
 public class MainMenuBar {
 
     private JMenuBar bar;
-    private JMenu channelMenu, scheduleMenu, p4Menu, extraMenu;
+    private JMenu channelMenu;
+    private JMenu p4Menu;
+    private JMenu extraMenu;
     private JMenuItem updateMenu;
     private EventListenerList actionListeners = new EventListenerList();
 
@@ -29,7 +29,7 @@ public class MainMenuBar {
     public MainMenuBar(){
         bar = new JMenuBar();
         channelMenu = new JMenu("Channel");
-        scheduleMenu = new JMenu("Schedule");
+        JMenu scheduleMenu = new JMenu("Schedule");
         p4Menu = new JMenu("P4");
         extraMenu = new JMenu("Extra");
 

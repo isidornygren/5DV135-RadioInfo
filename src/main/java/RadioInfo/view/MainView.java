@@ -13,7 +13,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
 /**
  * The main view object of RadioInfo
@@ -23,10 +22,8 @@ import java.util.Locale;
 public class MainView {
     private final JFrame frame;
     private JEditorPane episodeEditorPane;
-    private JEditorPane channelEditorPane;
 
     private JPanel informationPanel;
-    private JPanel episodePanel;
     private JPanel channelPanel;
     private JLabel episodeIconLabel;
     private JLabel channelIconLabel;
@@ -117,7 +114,7 @@ public class MainView {
      */
     private JPanel buildChannel() {
         channelPanel = new JPanel(new BorderLayout());
-        channelEditorPane = new JEditorPane();
+        JEditorPane channelEditorPane = new JEditorPane();
         channelIconLabel = new JLabel();
 
         channelEditorPane.setEditable(false);
@@ -138,7 +135,7 @@ public class MainView {
      */
     private JPanel buildInformation(){
         informationPanel = new JPanel(new BorderLayout());
-        episodePanel = new JPanel(new BorderLayout());
+        JPanel episodePanel = new JPanel(new BorderLayout());
         episodeEditorPane = new JEditorPane();
         episodeIconLabel = new JLabel();
         JScrollPane scrollPane = new JScrollPane(episodeEditorPane);
