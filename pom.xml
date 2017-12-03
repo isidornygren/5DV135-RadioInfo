@@ -6,6 +6,7 @@
     <groupId>RadioInfo</groupId>
     <artifactId>RadioInfo</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
     <name>RadioInfo</name>
     <dependencies>
         <dependency>
@@ -15,10 +16,16 @@
         </dependency>
     </dependencies>
     <properties>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <build>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -27,7 +34,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
             <plugin>

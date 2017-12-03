@@ -16,8 +16,8 @@ genom att köra `mvn package` i samma mapp som `pom.xml` filen ligger i, dvs Rad
 Detta generar den körbara .jar-filen i `target` mappen.
 ## Körning
 Den kompilerade .jar-filen kommer ligga i `target` mappen efter kompilering, och
-bör heta `RadioInfo-(version)-jar-with-dependencies.jar`. 
-För att exekvera programmet körs `java -jar target/RadioInfo-1.0-jar-with-dependencies.jar`
+bör heta `RadioInfo-<version>-jar-with-dependencies.jar`. 
+För att exekvera programmet körs `java -jar target/RadioInfo-<version>-jar-with-dependencies.jar`
 ## Tester
 Tester körs automatiskt tillsammans med kompileringen under exekveringen
 av `mvn package`, för att enbart köra tester körs `mvn test` i samma mapp
