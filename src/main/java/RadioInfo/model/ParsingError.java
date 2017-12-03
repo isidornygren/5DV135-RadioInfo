@@ -5,8 +5,8 @@ package RadioInfo.model;
  * @author Isidor Nygren
  */
 public class ParsingError {
-    Exception exception;
-    String errorString;
+    private Exception exception;
+    private String errorString;
 
     /**
      * Creates an error object with a string

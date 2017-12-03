@@ -42,8 +42,7 @@ public class ChannelWorker extends SwingWorker<Boolean, Channel>{
                 ArrayList<Channel> channels = parser.getChannels();
                 if (parser.hasErrors()) {
                     new ErrorDialog(parser.getErrors().get(0));
-                    cancel(true);
-                } else {
+                    cancel(true);                } else {
                     for (Channel channel : channels) {
                         if (isCancelled()) {
                             return false;

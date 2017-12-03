@@ -20,7 +20,7 @@ import java.util.Date;
  */
 public class ScheduleParser extends Parser {
     private DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    ArrayList<Episode> episodes = new ArrayList<>();
+    private ArrayList<Episode> episodes = new ArrayList<>();
     private Date date;
     private String apiScheduleUrl = "scheduledepisodes";
     private Integer channelId;
