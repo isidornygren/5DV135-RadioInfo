@@ -4,21 +4,24 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+
 /**
  * The model handling channels from the SR api
  * @version 1.0
  * @author Isidor Nygren
  */
 public class Channel {
-    Integer id;
-    String name;
-    String color;
-    String tagline;
-    String channelType;
-    URL imageUrl;
-    URL siteUrl;
-    URL scheduleUrl;
+    private Integer id;
+    private String name;
+    private String color;
+    private String tagline;
+    private String channelType;
+    private URL imageUrl;
+    private URL siteUrl;
+    private URL scheduleUrl;
     private Image image;
+    private ArrayList<Episode> episodeList;
 
     /**
      * A channel object based on the SR API. contains information about
@@ -50,6 +53,22 @@ public class Channel {
      */
     public void loadImage() throws IOException {
         image = ImageIO.read(imageUrl);
+    }
+
+    /**
+     * Adds a list of episodes for the channel
+     * @param episodeList the list of episodes to add
+     */
+    public void addEpisodeList(ArrayList<Episode> episodeList){
+        this.episodeList = episodeList;
+    }
+
+    /**
+     * Gets all the episodes for the channel
+     * @return ArrayList list of Episode objects
+     */
+    public ArrayList<Episode> getEpisodes(){
+        return this.episodeList;
     }
 
     public String getName() {

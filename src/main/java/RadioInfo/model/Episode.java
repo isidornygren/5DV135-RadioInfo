@@ -79,7 +79,7 @@ public class Episode {
      * @throws IOException if the image can't be opened
      */
     public void loadImage() throws IOException {
-        if(imageUrl != null){
+        if(imageUrl != null && image == null){
             image = ImageIO.read(imageUrl);
         }
     }
@@ -90,7 +90,7 @@ public class Episode {
      * @throws IOException if the image can't be opened
      */
     public void loadImageTemplate() throws IOException {
-        if(imageUrlTemplate != null){
+        if(imageUrlTemplate != null && imageTemplate == null){
             imageTemplate = ImageIO.read(imageUrlTemplate);
         }
     }

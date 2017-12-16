@@ -54,6 +54,17 @@ public class MainMenuBar {
     }
 
     /**
+     * Removes all the channels from the channel list in the menu bar
+     */
+    public void clearChannels(){
+        channelMenu.removeAll();
+        p4Menu = new JMenu("P4");
+        extraMenu = new JMenu("Extra");
+
+        channelMenu.add(p4Menu);
+        channelMenu.add(extraMenu);
+    }
+    /**
      * adds a channel to be rendered in the menu
      * @param channel the channel to be added to the menu
      */
